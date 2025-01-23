@@ -20,7 +20,7 @@ async function prepareData() {
         throw new Error("missing roundIndex");
     }
 
-    const dailyArray = JSON.parse(localStorage.getItem('dailyArray'))
+    const dailyArray = normalizeNo(JSON.parse(localStorage.getItem('dailyArray')))
     const roundInfo = dailyArray[roundIndex]
     const roundName = ["one", "two", "three", "four", "five"][roundIndex];
 
@@ -59,6 +59,22 @@ async function prepareData() {
         roundInfo,
         playerUuid: uuid,
     };
+}
+
+function normalizeNo(dailyArray) {
+    dailyArray = dailyArray?.filter(obj => typeof obj === 'object');
+    if (dailyArray?.length !== 5) {
+        throw new Error("dailyArray length is not 5");
+    }
+
+    const nos = dailyArray.map((round) => parseInt(round.No));
+    const maxNo = Math.max(...nos);
+    return dailyArray.map((round) => {
+        return {
+            ...round,
+            No: String(maxNo),
+        };
+    });
 }
 
 function injectDataAndScript(data) {

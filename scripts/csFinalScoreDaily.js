@@ -1,7 +1,7 @@
 async function prepareData() {
     const data = {};
 
-    const dailyInfo = JSON.parse(localStorage.getItem("dailyArray"))?.filter(obj => typeof obj === 'object');
+    const dailyInfo = normalizeNo(JSON.parse(localStorage.getItem("dailyArray")));
     data.dailyInfo = dailyInfo;
     data.dailyNo = dailyInfo[0].No;
 
@@ -43,6 +43,22 @@ async function prepareData() {
     }
 
     return data;
+}
+
+function normalizeNo(dailyArray) {
+    dailyArray = dailyArray?.filter(obj => typeof obj === 'object');
+    if (dailyArray?.length !== 5) {
+        throw new Error("dailyArray length is not 5");
+    }
+
+    const nos = dailyArray.map((round) => parseInt(round.No));
+    const maxNo = Math.max(...nos);
+    return dailyArray.map((round) => {
+        return {
+            ...round,
+            No: String(maxNo),
+        };
+    });
 }
 
 function injectDataAndScript(data) {
