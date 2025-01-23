@@ -32,11 +32,11 @@ jobs:
           npm install -g chrome-webstore-upload-cli
       - name: Upload to chrome webstore
         run: |-
-          chrome-webstore-upload upload \\
-            --source timeguessr-social-extension-${{ github.ref_name }}.zip \\
-            --extension-id ${{ vars.EXTENSION_ID }} \\
-            --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
-            --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \\
+          chrome-webstore-upload upload \
+            --source timeguessr-social-extension-${{ github.ref_name }}.zip \
+            --extension-id ${{ vars.EXTENSION_ID }} \
+            --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \
+            --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \
             --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
       - name: Create changelog
         uses: mikepenz/release-changelog-builder-action@v5
