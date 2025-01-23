@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Timeguessr Social Extension",
+  "version": "1.2",
+  "icons": {
+    "32": "logo_32.png"
+  },
+  "action": {
+    "default_popup": "popup/settings.html"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "scripts/serviceWorker.js"
+  },
+  "content_scripts": [
+    {
+      "js": ["scripts/csFinalScoreDaily.js"],
+      "css": ["scripts/csFinalScoreDaily.css"],
+      "matches": [
+        "https://timeguessr.com/finalscoredaily"
+      ]
+    },
+    {
+      "js": ["scripts/csRoundResults.js"],
+      "matches": [
+        "https://timeguessr.com/dailyroundresults"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/icsEnhancedBreakdown.js"
+      ],
+      "matches": ["https://timeguessr.com/*"]
+    }
+  ]
+}
