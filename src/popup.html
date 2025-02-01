@@ -1,0 +1,19 @@
+<html lang="en">
+<head>
+  <title>Timeguessr Social Extension</title>
+  <script type="module" src="./popup.ts"></script>
+  <link rel="stylesheet" href="./popup.css">
+</head>
+<body>
+<div class="container">
+  <h1>Settings</h1>
+  <div class="settings">
+    <label for="serverUrl">Server URL</label><input id="serverUrl" type="text"/>
+    <label for="uuid">User ID</label><input id="uuid" type="text" disabled/>
+    <label for="initials">Initials (max 3 characters)</label><input id="initials" type="text" maxlength="3"/>
+    <button id="save">Save</button>
+    <p id="feedback" style="display: none;"></p>
+  </div>
+</div>
+</body>
+</html>

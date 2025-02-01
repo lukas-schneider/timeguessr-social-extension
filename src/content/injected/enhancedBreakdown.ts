@@ -1,7 +1,7 @@
-const INFORM_BLUE = '#0090a7';
+const BLUE = '#0090a7';
 
 function init() {
-    const data = JSON.parse(sessionStorage.getItem("tgs.data"));
+    const data = JSON.parse(sessionStorage.getItem("tgs.data")!);
 
     if (data.leaderboard) {
         try {
@@ -11,7 +11,7 @@ function init() {
         }
     }
 
-    let enhancedMap;
+    let enhancedMap: EnhancedMap;
     try {
         enhancedMap = new EnhancedMap(data);
     } catch (e) {
@@ -19,7 +19,7 @@ function init() {
     }
 
     if (document.getElementById("breakdownList")) {
-        let imageDetails;
+        let imageDetails: ImageDetails;
         try {
             imageDetails = new ImageDetails(data);
         } catch (e) {
@@ -27,29 +27,29 @@ function init() {
         }
 
         ["one", "two", "three", "four", "five"]
-            .map((roundName) => document.getElementById('block' + capitalize(roundName)))
+            .map((roundName) => document.getElementById('block' + capitalize(roundName))!)
             .map(clone)
             .filter(Boolean)
             .forEach((elem, index) => {
                 if (enhancedMap) {
-                    elem.querySelector(".textWrap").addEventListener("click", () => enhancedMap.show(index));
+                    elem.querySelector(".textWrap")!.addEventListener("click", () => enhancedMap.show(index));
                 }
                 if (imageDetails) {
-                    elem.querySelector(".summaryImage").addEventListener("click", () => imageDetails.show(index));
-                    document.getElementById("exitBreakdownButton").addEventListener("click", () => imageDetails.hide());
+                    elem.querySelector(".summaryImage")!.addEventListener("click", () => imageDetails.show(index));
+                    document.getElementById("exitBreakdownButton")!.addEventListener("click", () => imageDetails.hide());
                 }
             });
     }
 
 }
 
-function capitalize(roundName) {
+function capitalize(roundName: string) {
     return roundName.charAt(0).toUpperCase() + roundName.slice(1);
 }
 
-function clone($elem) {
-    const clonedElem = $elem.cloneNode(true);
-    $elem.parentNode.replaceChild(clonedElem, $elem);
+function clone($elem: HTMLElement): HTMLElement {
+    const clonedElem = $elem.cloneNode(true) as HTMLElement;
+    $elem.parentNode!.replaceChild(clonedElem, $elem);
     return clonedElem;
 }
 
@@ -57,7 +57,7 @@ class Leaderboard {
     data;
     div;
 
-    constructor(data) {
+    constructor(data: any) {
         if (!data.leaderboard.today || !data.leaderboard.allTime) {
             throw new Error("missing leaderboard data");
         }
@@ -67,7 +67,7 @@ class Leaderboard {
         this.div.className = "tgs-leaderboard-container";
         this.div.innerHTML = this.getContent();
 
-        const container = document.getElementById("resultsContainer");
+        const container = document.getElementById("resultsContainer")!;
         container.insertBefore(this.div, container.firstChild);
     }
 
@@ -77,7 +77,7 @@ class Leaderboard {
     <h3>Daily ${this.data.dailyNo}</h3>
     <table>
     <tbody>
-        ${this.data.leaderboard.today.map((item, _index) => `
+        ${this.data.leaderboard.today.map((item: any, _index: number) => `
             <tr class="${item.playerUuid === this.data.playerUuid ? 'its-you' : ''}">
                 <td class="tgs-initials">${item.initials}</td>
                 <td class="tgs-score">${item.score}</td>
@@ -90,7 +90,7 @@ class Leaderboard {
     <h3>All Time</h3>
     <table>
     <tbody>
-        ${this.data.leaderboard.allTime.map((item, _index) => `
+        ${this.data.leaderboard.allTime.map((item: any, _index: number) => `
             <tr class="${item.playerUuid === this.data.playerUuid ? 'tgs-its-you' : ''}">
                 <td class="tgs-initials">${item.initials}</td>
                 <td class="tgs-daily-date">${item.dailyDate}</td>
@@ -108,7 +108,7 @@ class EnhancedMap {
     map;
     items;
 
-    constructor(data) {
+    constructor(data: any) {
         if (!data.playerUuid) {
             throw new Error("cannot access map");
         }
@@ -135,7 +135,7 @@ class EnhancedMap {
         }
     }
 
-    show(index) {
+    show(index: number) {
         this.map.removeAnnotations(this.map.annotations);
         this.map.removeOverlays(this.map.overlays);
 
@@ -146,7 +146,7 @@ class EnhancedMap {
         }
     }
 
-    createItems(roundInfo, roundResults) {
+    createItems(roundInfo: any, roundResults: any) {
 
         const trueLat = Number(roundInfo.Location.lat);
         const trueLon = Number(roundInfo.Location.lng);
@@ -158,13 +158,13 @@ class EnhancedMap {
             }
         );
 
-        const playerItems = roundResults.flatMap((playerResult) => {
+        const playerItems = roundResults.flatMap((playerResult: any) => {
             const isLocalUser = playerResult.playerUuid === this.data.playerUuid;
             const {latitude, longitude} = playerResult;
             const guessAnnotation = new mapkit.MarkerAnnotation(
                 new mapkit.Coordinate(latitude, longitude),
                 {
-                    color: isLocalUser ? INFORM_BLUE : 'black',
+                    color: isLocalUser ? BLUE : 'black',
                     glyphText: playerResult.initials,
                     glyphColor: "white",
                     title: playerResult.guessedYear + "",
@@ -181,7 +181,7 @@ class EnhancedMap {
                 lineWidth: 1.5,
                 lineJoin: "round",
                 lineDash: [8, 6],
-                strokeColor: isLocalUser ? INFORM_BLUE : 'black',
+                strokeColor: isLocalUser ? BLUE : 'black',
             });
             const overlay = new mapkit.PolylineOverlay(lineCoords, {style: style});
 
@@ -192,7 +192,7 @@ class EnhancedMap {
     }
 
 
-    adjustForShortestPath(points) {
+    adjustForShortestPath(points: [[number, number], [number, number]]) {
         let startLon = this.normalizeLongitude(Number(points[0][1]));
         let endLon = this.normalizeLongitude(Number(points[1][1]));
 
@@ -207,7 +207,7 @@ class EnhancedMap {
         return points.map(point => new mapkit.Coordinate(Number(point[0]), point[1]));
     }
 
-    normalizeLongitude(lon) {
+    normalizeLongitude(lon: number) {
         lon = lon % 360;
         if (lon > 180) {
             lon -= 360;
@@ -219,26 +219,26 @@ class EnhancedMap {
 }
 
 class ImageDetails {
-    data;
+    data: any;
 
-    $div;
-    $img;
-    $description;
+    $div: HTMLDivElement;
+    $img: HTMLImageElement;
+    $description: HTMLElement;
 
-    wheelZoom;
+    wheelZoom: WheelZoom;
 
-    constructor(data) {
+    constructor(data: any) {
         this.data = data;
         this.$div = document.createElement('div');
         this.$div.style.display = "none";
         this.$div.innerHTML = this.getContent();
-        this.$img = this.$div.querySelector(".tgs-image");
+        this.$img = this.$div.querySelector(".tgs-image")!;
         this.wheelZoom = new WheelZoom(this.$img);
 
-        this.$description = this.$div.querySelector(".tgs-image-description");
+        this.$description = this.$div.querySelector(".tgs-image-description")!;
         document.body.appendChild(this.$div);
 
-        this.$div.querySelector(".tgs-close-button").addEventListener("click", () => this.hide());
+        this.$div.querySelector(".tgs-close-button")!.addEventListener("click", () => this.hide());
     }
 
     getContent() {
@@ -251,9 +251,9 @@ class ImageDetails {
         `;
     }
 
-    show(index) {
+    show(index: any) {
         const dailyInfo = this.data.dailyInfo[index];
-        this.$description.textContent = `${dailyInfo.Year}, ${dailyInfo.Country}: ${dailyInfo.Description}`;
+        this.$description!.textContent = `${dailyInfo.Year}, ${dailyInfo.Country}: ${dailyInfo.Description}`;
         this.$img.src = dailyInfo.URL;
         this.$div.style.display = "block";
     }
@@ -265,7 +265,7 @@ class ImageDetails {
 }
 
 class WheelZoom {
-    $img;
+    $img: HTMLImageElement;
 
     settings = {
         zoom: 0.06,
@@ -275,16 +275,16 @@ class WheelZoom {
         initialY: 0.5,
     };
 
-    width;
-    height;
-    bgWidth;
-    bgHeight;
-    bgPosX;
-    bgPosY;
-    previousEvent;
-    transparentSpaceFiller;
+    width?: number;
+    height?: number;
+    bgWidth?: number;
+    bgHeight?: number;
+    bgPosX?: number;
+    bgPosY?: number;
+    previousEvent?: MouseEvent;
+    transparentSpaceFiller?: string;
 
-    constructor(img) {
+    constructor(img: HTMLImageElement) {
         this.reset = this.reset.bind(this);
         this.onwheel = this.onwheel.bind(this);
         this.drag = this.drag.bind(this);
@@ -297,110 +297,6 @@ class WheelZoom {
             this.load();
         }
         this.$img.addEventListener('load', this.load);
-    }
-
-
-    setSrcToBackground() {
-        this.$img.style.backgroundRepeat = 'no-repeat';
-        this.$img.style.backgroundImage = 'url("' + this.$img.src + '")';
-        this.transparentSpaceFiller = 'data:image/svg+xml;base64,' + window.btoa('<svg xmlns="http://www.w3.org/2000/svg" width="' + this.$img.naturalWidth + '" height="' + this.$img.naturalHeight + '"></svg>');
-        this.$img.src = this.transparentSpaceFiller;
-    }
-
-    updateBgStyle() {
-        if (this.bgPosX > 0) {
-            this.bgPosX = 0;
-        } else if (this.bgPosX < this.width - this.bgWidth) {
-            this.bgPosX = this.width - this.bgWidth;
-        }
-
-        if (this.bgPosY > 0) {
-            this.bgPosY = 0;
-        } else if (this.bgPosY < this.height - this.bgHeight) {
-            this.bgPosY = this.height - this.bgHeight;
-        }
-
-        this.$img.style.backgroundSize = this.bgWidth + 'px ' + this.bgHeight + 'px';
-        this.$img.style.backgroundPosition = this.bgPosX + 'px ' + this.bgPosY + 'px';
-    }
-
-    reset() {
-        this.bgWidth = this.width;
-        this.bgHeight = this.height;
-        this.bgPosX = this.bgPosY = 0;
-        this.updateBgStyle();
-    }
-
-    onwheel(e) {
-        e.preventDefault();
-
-        let deltaY = 0;
-        if (e.deltaY) { // FireFox 17+ (IE9+, Chrome 31+?)
-            deltaY = e.deltaY;
-        } else if (e.wheelDelta) {
-            deltaY = -e.wheelDelta;
-        }
-
-        // As far as I know, there is no good cross-browser way to get the cursor position relative to the event target.
-        // We have to calculate the target element's position relative to the document, and subtrack that from the
-        // cursor's position relative to the document.
-        const rect = this.$img.getBoundingClientRect();
-        const offsetX = e.pageX - rect.left - window.pageXOffset;
-        const offsetY = e.pageY - rect.top - window.pageYOffset;
-
-        // Record the offset between the bg edge and cursor:
-        const bgCursorX = offsetX - this.bgPosX;
-        const bgCursorY = offsetY - this.bgPosY;
-
-        // Use the previous offset to get the percent offset between the bg edge and cursor:
-        const bgRatioX = bgCursorX / this.bgWidth;
-        const bgRatioY = bgCursorY / this.bgHeight;
-
-        // Update the bg size:
-        if (deltaY < 0) {
-            this.bgWidth += this.bgWidth * this.settings.zoom;
-            this.bgHeight += this.bgHeight * this.settings.zoom;
-        } else {
-            this.bgWidth -= this.bgWidth * this.settings.zoom;
-            this.bgHeight -= this.bgHeight * this.settings.zoom;
-        }
-
-        if (this.settings.maxZoom) {
-            this.bgWidth = Math.min(this.width * this.settings.maxZoom, this.bgWidth);
-            this.bgHeight = Math.min(this.height * this.settings.maxZoom, this.bgHeight);
-        }
-
-        // Take the percent offset and apply it to the new size:
-        this.bgPosX = offsetX - (this.bgWidth * bgRatioX);
-        this.bgPosY = offsetY - (this.bgHeight * bgRatioY);
-
-        // Prevent zooming out beyond the starting size
-        if (this.bgWidth <= this.width || this.bgHeight <= this.height) {
-            this.reset();
-        } else {
-            this.updateBgStyle();
-        }
-    }
-
-    drag(e) {
-        e.preventDefault();
-        this.bgPosX += (e.pageX - this.previousEvent.pageX);
-        this.bgPosY += (e.pageY - this.previousEvent.pageY);
-        this.previousEvent = e;
-        this.updateBgStyle();
-    }
-
-    removeDrag() {
-        document.removeEventListener('mouseup', this.removeDrag);
-        document.removeEventListener('mousemove', this.drag);
-    }
-
-    // Make the background draggable
-    draggable(e) {
-        e.preventDefault();
-        this.previousEvent = e;
-        document.addEventListener('mousemove', this.drag);
-        document.addEventListener('mouseup', this.removeDrag);
     }
 
     load() {
@@ -426,6 +322,108 @@ class WheelZoom {
         this.$img.addEventListener('wheel', this.onwheel);
         this.$img.addEventListener('mousedown', this.draggable);
     }
+
+    setSrcToBackground() {
+        this.$img.style.backgroundRepeat = 'no-repeat';
+        this.$img.style.backgroundImage = 'url("' + this.$img.src + '")';
+        this.transparentSpaceFiller = 'data:image/svg+xml;base64,' + window.btoa('<svg xmlns="http://www.w3.org/2000/svg" width="' + this.$img.naturalWidth + '" height="' + this.$img.naturalHeight + '"></svg>');
+        this.$img.src = this.transparentSpaceFiller;
+    }
+
+    updateBgStyle() {
+        if (this.bgPosX! > 0) {
+            this.bgPosX = 0;
+        } else if (this.bgPosX! < this.width! - this.bgWidth!) {
+            this.bgPosX = this.width! - this.bgWidth!;
+        }
+
+        if (this.bgPosY! > 0) {
+            this.bgPosY = 0;
+        } else if (this.bgPosY! < this.height! - this.bgHeight!) {
+            this.bgPosY = this.height! - this.bgHeight!;
+        }
+
+        this.$img.style.backgroundSize = this.bgWidth + 'px ' + this.bgHeight + 'px';
+        this.$img.style.backgroundPosition = this.bgPosX + 'px ' + this.bgPosY + 'px';
+    }
+
+    reset() {
+        this.bgWidth = this.width;
+        this.bgHeight = this.height;
+        this.bgPosX = this.bgPosY = 0;
+        this.updateBgStyle();
+    }
+
+    onwheel(e: WheelEvent) {
+        e.preventDefault();
+
+        let deltaY = 0;
+        if (e.deltaY) { // FireFox 17+ (IE9+, Chrome 31+?)
+            deltaY = e.deltaY;
+        }
+
+        // As far as I know, there is no good cross-browser way to get the cursor position relative to the event target.
+        // We have to calculate the target element's position relative to the document, and subtrack that from the
+        // cursor's position relative to the document.
+        const rect = this.$img.getBoundingClientRect();
+        const offsetX = e.pageX - rect.left - window.pageXOffset;
+        const offsetY = e.pageY - rect.top - window.pageYOffset;
+
+        // Record the offset between the bg edge and cursor:
+        const bgCursorX = offsetX - this.bgPosX!;
+        const bgCursorY = offsetY - this.bgPosY!;
+
+        // Use the previous offset to get the percent offset between the bg edge and cursor:
+        const bgRatioX = bgCursorX / this.bgWidth!;
+        const bgRatioY = bgCursorY / this.bgHeight!;
+
+        // Update the bg size:
+        if (deltaY < 0) {
+            this.bgWidth! += this.bgWidth! * this.settings.zoom;
+            this.bgHeight! += this.bgHeight! * this.settings.zoom;
+        } else {
+            this.bgWidth! -= this.bgWidth! * this.settings.zoom;
+            this.bgHeight! -= this.bgHeight! * this.settings.zoom;
+        }
+
+        if (this.settings.maxZoom) {
+            this.bgWidth = Math.min(this.width! * this.settings.maxZoom, this.bgWidth!);
+            this.bgHeight = Math.min(this.height! * this.settings.maxZoom, this.bgHeight!);
+        }
+
+        // Take the percent offset and apply it to the new size:
+        this.bgPosX = offsetX - (this.bgWidth! * bgRatioX);
+        this.bgPosY = offsetY - (this.bgHeight! * bgRatioY);
+
+        // Prevent zooming out beyond the starting size
+        if (this.bgWidth! <= this.width! || this.bgHeight! <= this.height!) {
+            this.reset();
+        } else {
+            this.updateBgStyle();
+        }
+    }
+
+    drag(e: MouseEvent) {
+        e.preventDefault();
+        this.bgPosX! += (e.pageX - this.previousEvent!.pageX);
+        this.bgPosY! += (e.pageY - this.previousEvent!.pageY);
+        this.previousEvent = e;
+        this.updateBgStyle();
+    }
+
+    removeDrag() {
+        document.removeEventListener('mouseup', this.removeDrag);
+        document.removeEventListener('mousemove', this.drag);
+    }
+
+    // Make the background draggable
+    draggable(e: MouseEvent) {
+        e.preventDefault();
+        this.previousEvent = e;
+        document.addEventListener('mousemove', this.drag);
+        document.addEventListener('mouseup', this.removeDrag);
+    }
+
 }
 
 init();
