@@ -9,7 +9,7 @@ import {
 export async function getSettings<K extends keyof Settings>(
   keys: K[],
 ): Promise<Pick<Settings, K>> {
-  return (await browser.storage.local.get(keys)) as Settings;
+  return (await browser.storage.local.get(keys)) as any as Settings;
 }
 
 export async function updateSettings(settings: Partial<Settings>) {
