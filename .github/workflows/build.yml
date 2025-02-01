@@ -13,6 +13,7 @@ jobs:
           node-version: "22.x"
       - name: Build
         run: |-
+          echo "{{ secrets.EXTENSION_API_KEY }}" > ./public/api-key.txt
           npm ci
           npm run build
       - name: Zip
