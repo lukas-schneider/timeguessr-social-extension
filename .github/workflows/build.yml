@@ -12,7 +12,7 @@ jobs:
         env:
           EXTENSION_API_KEY: ${{ secrets.EXTENSION_API_KEY }}
         run: |-
-          echo $EXTENSION_API_KEY &gt ./public/api-key.txt
+          echo $EXTENSION_API_KEY > ./public/api-key.txt
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
