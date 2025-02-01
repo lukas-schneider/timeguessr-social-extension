@@ -8,9 +8,7 @@
   "action": {
     "default_popup": "src/popup.html"
   },
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
   "background": {
     "{{chrome}}.service_worker": "src/background.ts"
   },
@@ -18,22 +16,16 @@
     {
       "js": ["src/content/finalScoreDaily.ts"],
       "css": ["src/content/finalScoreDaily.css"],
-      "matches": [
-        "https://timeguessr.com/finalscoredaily"
-      ]
+      "matches": ["https://timeguessr.com/finalscoredaily"]
     },
     {
       "js": ["src/content/dailyRoundResults.ts"],
-      "matches": [
-        "https://timeguessr.com/dailyroundresults"
-      ]
+      "matches": ["https://timeguessr.com/dailyroundresults"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "src/content/injected/enhancedBreakdown.js"
-      ],
+      "resources": ["src/injected/enhancedBreakdown.js"],
       "matches": ["https://timeguessr.com/*"]
     }
   ]

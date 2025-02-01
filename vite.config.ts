@@ -17,7 +17,7 @@ export default defineConfig({
     webExtension({
       manifest: generateManifest,
       watchFilePaths: ["package.json", "manifest.json"],
-      additionalInputs: ["src/content/injected/enhancedBreakdown.ts"],
+      additionalInputs: ["src/injected/enhancedBreakdown.ts"],
     }),
   ],
 });

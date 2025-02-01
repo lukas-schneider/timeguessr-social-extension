@@ -14,10 +14,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "typeRoots": [
-      "node_modules/mapkit-typescript",
-      "node_modules/@types"
-    ]
+    "typeRoots": ["node_modules/mapkit-typescript", "node_modules/@types"]
   },
   "include": ["src"]
 }

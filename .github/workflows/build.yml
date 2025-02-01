@@ -1,5 +1,5 @@
 name: Build
-on: [ push ]
+on: [push]
 jobs:
   build:
     name: Build Chrome extension zip
@@ -10,7 +10,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: "22.x"
       - name: Build
         run: |-
           npm ci
@@ -36,7 +36,7 @@ jobs:
           name: timeguessr-social-extension-${{ github.ref_name }}
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: "22.x"
       - name: Install webstore cli
         run: |-
           npm install -g chrome-webstore-upload-cli

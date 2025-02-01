@@ -1,51 +1,51 @@
-import {injectDataAndScript, normalizeDailyArray} from "./utils";
-import browser from "webextension-polyfill";
+import {
+  getDailyNo,
+  getRoundInfos,
+  getRoundResultValue,
+} from "../utils/timeguessr.utils";
+import { callApi, getSettings } from "../utils/extension.utils";
+import { tgRoundNames } from "../types/timeguessr.types";
+import { injectEnhancedBreakdown } from "./utils";
 
-async function prepareData() {
-    const data: any = {};
+async function run() {
+  const dailyNo = getDailyNo();
+  const roundInfos = getRoundInfos();
+  const { uuid, groupId } = await getSettings(["uuid", "groupId"]);
+  if (!groupId) {
+    throw new Error("groupId is not available");
+  }
 
-    const dailyInfo = normalizeDailyArray(JSON.parse(localStorage.getItem("dailyArray")!));
-    data.dailyInfo = dailyInfo;
-    data.dailyNo = dailyInfo[0].No;
+  const totalPoints = tgRoundNames
+    .map((roundName) => Number(getRoundResultValue(`${roundName}Total`)))
+    .reduce((acc, val) => acc + val, 0);
 
-    const {uuid} = await browser.storage.local.get(["uuid"]);
-    data.playerUuid = uuid;
+  // send data to background script, get back data with other player results
+  await callApi("addDailyResult", {
+    groupId,
+    dailyNo,
+    addDailyResultRequest: {
+      uuid,
+      totalPoints,
+    },
+  });
+  const dailyResults = await callApi("getDailyResults", {
+    groupId,
+    dailyNo,
+  });
 
-    if (uuid) {
-        const totalPoints = ["one", "two", "three", "four", "five"]
-            .map(roundName => Number(localStorage.getItem(roundName + "Total")))
-            .reduce((acc, val) => acc + val, 0);
+  const leaderboard = await callApi("getLeaderboard", {
+    groupId,
+    dailyNo,
+  });
 
-        // send data to background script, get back data with other player results
-        const requestBody = {
-            uuid: uuid,
-            dailyNo: data.dailyNo,
-            totalPoints,
-        };
-
-        // send data to background script, get back data with other player results
-        const dailyResults = await browser.runtime.sendMessage({
-            endpoint: '/roundResult', method: 'POST', body: requestBody,
-        });
-
-        if (!dailyResults || !dailyResults.length) {
-            console.error("Submitting result failed: " + JSON.stringify(dailyResults, null, 2));
-        } else {
-            data.dailyResults = dailyResults;
-        }
-
-        const leaderboard = await browser.runtime.sendMessage({
-            endpoint: '/leaderboard?dailyNo=' + data.dailyNo, method: 'GET',
-        });
-
-        if (!leaderboard || !leaderboard.today || !leaderboard.allTime) {
-            console.error("Fetching leaderboard failed: " + JSON.stringify(leaderboard, null, 2));
-        } else {
-            data.leaderboard = leaderboard;
-        }
-    }
-
-    return data;
+  injectEnhancedBreakdown({
+    dailyNo,
+    uuid,
+    groupId,
+    leaderboard,
+    dailyResults,
+    roundInfos,
+  });
 }
 
-prepareData().then(injectDataAndScript).catch(err => console.error(err));
+run().catch((err) => console.error(err));

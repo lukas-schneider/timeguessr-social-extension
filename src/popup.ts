@@ -1,64 +1,79 @@
-import browser from "webextension-polyfill";
+import { UpdatePlayerResponse } from "./api";
+import { callApi, getSettings, updateSettings } from "./utils/extension.utils";
 
-async function initSettings () {
-    const $save = document.getElementById("save") as HTMLButtonElement;
-    const $feedback = document.getElementById("feedback") as HTMLElement;
-    const $serverUrl= document.getElementById("serverUrl") as HTMLInputElement;
-    const $uuid = document.getElementById("uuid")  as HTMLInputElement;
-    const $initials = document.getElementById("initials") as HTMLInputElement;
+async function initSettings() {
+  const $save = document.getElementById("save") as HTMLButtonElement;
+  const $feedback = document.getElementById("feedback") as HTMLElement;
 
-    const playerInfo = await browser.storage.local.get(['initials', 'uuid', 'serverUrl']);
-    $serverUrl.value = playerInfo.serverUrl ?? '';
-    $uuid!.value = playerInfo.uuid;
-    $initials.value = playerInfo.initials ?? '';
+  const $apiKey = document.getElementById("apiKey") as HTMLInputElement;
+  const $groupId = document.getElementById("groupId") as HTMLInputElement;
+  const $uuid = document.getElementById("uuid") as HTMLInputElement;
+  const $initials = document.getElementById("initials") as HTMLInputElement;
 
-    async function update() {
-        clearFeedback();
-        await browser.storage.local.set({
-            serverUrl: $serverUrl.value?.trim(),
-        });
+  const settings = await getSettings(["initials", "uuid", "groupId", "apiKey"]);
+  $apiKey.value = settings.apiKey ?? "";
+  $groupId.value = settings.groupId ?? "";
+  $uuid.value = settings.uuid;
+  $initials.value = settings.initials ?? "";
 
-        const newPlayerInfo = await browser.runtime.sendMessage({
-            endpoint: '/playerInfo',
-            method: 'POST',
-            body: {
-                uuid: $uuid.value?.trim(),
-                initials: $initials.value?.trim(),
-            }
-        });
+  async function update() {
+    clearFeedback();
 
-        if (typeof newPlayerInfo === 'object') {
-            await browser.storage.local.set(newPlayerInfo);
-            console.log("updated: " + JSON.stringify(newPlayerInfo));
-            showSuccess();
-        } else {
-            showError(newPlayerInfo)
-        }
+    const uuid = $uuid.value?.trim();
+    const groupId = $groupId.value?.trim();
+    const initials = $initials.value?.trim();
+
+    if (!groupId || !uuid || !initials) {
+      showError("All fields are required");
+      return;
     }
 
-    function clearFeedback() {
-        $save.disabled = true;
-        $feedback.innerHTML = '';
-        $feedback.style.display = 'none';
+    let response: UpdatePlayerResponse;
+    try {
+      response = await callApi("updatePlayer", {
+        groupId,
+        updatePlayerRequest: {
+          uuid,
+          initials,
+        },
+      });
+    } catch (err: any) {
+      showError(err?.message ?? "failed to update player");
+      return;
     }
 
-    function showError(err: string) {
-        $save.disabled = false;
-        $feedback.innerHTML = err ?? 'error';
-        $feedback.style.display = 'block';
-        $feedback.style.color = 'red';
-    }
+    await updateSettings({
+      ...response,
+    });
 
-    function showSuccess() {
-        $save.disabled = false;
-        $feedback.innerHTML = 'saved';
-        $feedback.style.display = 'block';
-        $feedback.style.color = 'green';
-    }
+    showSuccess();
+  }
 
-    $save.addEventListener("click", () => update().catch(err => {
-        showError(err);
-    }));
+  function clearFeedback() {
+    $save.disabled = true;
+    $feedback.innerHTML = "";
+    $feedback.style.display = "none";
+  }
+
+  function showError(err: string) {
+    $save.disabled = false;
+    $feedback.innerHTML = err ?? "error";
+    $feedback.style.display = "block";
+    $feedback.style.color = "red";
+  }
+
+  function showSuccess() {
+    $save.disabled = false;
+    $feedback.innerHTML = "saved";
+    $feedback.style.display = "block";
+    $feedback.style.color = "green";
+  }
+
+  $save.addEventListener("click", () =>
+    update().catch((err) => {
+      showError(err);
+    }),
+  );
 }
 
 window.addEventListener("load", () => initSettings());

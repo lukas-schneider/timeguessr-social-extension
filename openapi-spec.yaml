@@ -1,0 +1,454 @@
+openapi: "3.0.1"
+info:
+  title: "tgs_v2"
+  description: "Timeguessr Social API V2"
+  version: "1.0.0"
+servers:
+  - url: "https://ck1hb2hxya.execute-api.eu-central-1.amazonaws.com/{basePath}"
+    variables:
+      basePath:
+        default: "prod"
+paths:
+  /v2/test/reset:
+    post:
+      operationId: "resetTest"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResetTestResponse"
+      security:
+        - api_key: []
+  /v2/group/{groupId}/daily/{dailyNo}/result:
+    get:
+      operationId: "getDailyResults"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyResults"
+      security:
+        - api_key: []
+    post:
+      operationId: "addDailyResult"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddDailyResultRequest"
+        required: true
+      responses:
+        "200":
+          description: "200 response"
+          content: {}
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+  /v2/group/{groupId}/player:
+    post:
+      operationId: "updatePlayer"
+      parameters:
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePlayerRequest"
+        required: true
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdatePlayerResponse"
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+  /v2/group/{groupId}/leaderboard:
+    get:
+      operationId: "getLeaderboard"
+      parameters:
+        - name: "dailyNo"
+          in: "query"
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLeaderboardResponse"
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+  /v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/result:
+    get:
+      operationId: "getRoundResults"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoundResults"
+      security:
+        - api_key: []
+    post:
+      operationId: "addRoundResult"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddRoundResultRequest"
+        required: true
+      responses:
+        "200":
+          description: "200 response"
+          content: {}
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+components:
+  schemas:
+    GetLeaderboardResponse:
+      type: "object"
+      properties:
+        allTime:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/AllTimeLeaderboardEntry"
+        today:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/LeaderboardEntry"
+    UpdatePlayerRequest:
+      required:
+        - "initials"
+        - "uuid"
+      type: "object"
+      properties:
+        uuid:
+          type: "string"
+        initials:
+          maxLength: 3
+          type: "string"
+    AddDailyResultRequest:
+      required:
+        - "totalPoints"
+        - "uuid"
+      type: "object"
+      properties:
+        uuid:
+          type: "string"
+        totalPoints:
+          type: "number"
+    UpdatePlayerResponse:
+      required:
+        - "groupId"
+        - "initials"
+        - "uuid"
+      type: "object"
+      properties:
+        groupId:
+          type: "string"
+        uuid:
+          type: "string"
+        initials:
+          maxLength: 3
+          type: "string"
+    RoundResult:
+      required:
+        - "distanceOff"
+        - "guessedYear"
+        - "latitude"
+        - "locationPoints"
+        - "longitude"
+        - "roundIndex"
+        - "timePoints"
+        - "totalPoints"
+        - "yearsOff"
+      type: "object"
+      properties:
+        roundIndex:
+          type: "number"
+        totalPoints:
+          type: "number"
+        locationPoints:
+          type: "number"
+        timePoints:
+          type: "number"
+        yearsOff:
+          type: "number"
+        distanceOff:
+          type: "string"
+        latitude:
+          type: "number"
+        longitude:
+          type: "number"
+        guessedYear:
+          type: "number"
+    RoundResults:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/PlayerRoundResult"
+    PlayerRoundResult:
+      required:
+        - "initials"
+        - "uuid"
+      type: "object"
+      properties:
+        uuid:
+          type: "string"
+        initials:
+          maxLength: 3
+          type: "string"
+      allOf:
+        - $ref: "#/components/schemas/RoundResult"
+    AllTimeLeaderboardEntry:
+      required:
+        - "dailyDate"
+      type: "object"
+      properties:
+        dailyDate:
+          type: "string"
+      allOf:
+        - $ref: "#/components/schemas/LeaderboardEntry"
+    AddRoundResultRequest:
+      required:
+        - "imageInfo"
+        - "roundResult"
+        - "uuid"
+      type: "object"
+      properties:
+        uuid:
+          type: "string"
+        imageInfo:
+          $ref: "#/components/schemas/ImageInfo"
+        roundResult:
+          $ref: "#/components/schemas/RoundResult"
+    DailyResults:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/RoundResults"
+    ImageInfo:
+      required:
+        - "country"
+        - "imageDescription"
+        - "imageUrl"
+        - "latitude"
+        - "longitude"
+        - "year"
+      type: "object"
+      properties:
+        latitude:
+          type: "number"
+        longitude:
+          type: "number"
+        country:
+          type: "string"
+        year:
+          type: "number"
+        imageDescription:
+          type: "string"
+        imageUrl:
+          type: "string"
+    LeaderboardEntry:
+      required:
+        - "initials"
+        - "score"
+        - "uuid"
+      type: "object"
+      properties:
+        score:
+          type: "number"
+        initials:
+          maxLength: 3
+          type: "string"
+        uuid:
+          type: "string"
+    ResetTestResponse:
+      required:
+        - "dailyNos"
+        - "groupId"
+        - "playerUuids"
+      type: "object"
+      properties:
+        groupId:
+          type: "string"
+        playerUuids:
+          type: "array"
+          items:
+            type: "string"
+        dailyNos:
+          type: "array"
+          items:
+            type: "string"
+  securitySchemes:
+    api_key:
+      type: "apiKey"
+      name: "x-api-key"
+      in: "header"

@@ -1,67 +1,86 @@
-import browser from "webextension-polyfill";
-import {injectDataAndScript, normalizeDailyArray} from "./utils";
+import { callApi, getSettings } from "../utils/extension.utils";
+import {
+  getDailyNo,
+  getRoundInfos,
+  getRoundResultValue,
+} from "../utils/timeguessr.utils";
+import { ImageInfo, RoundResult } from "../api";
+import { tgRoundNames } from "../types/timeguessr.types";
+import { injectEnhancedBreakdown } from "./utils";
 
-async function prepareData() {
-    const {uuid} = await browser.storage.local.get(["uuid"]);
+async function run() {
+  const dailyNo = getDailyNo();
+  const { uuid, groupId } = await getSettings(["uuid", "groupId"]);
+  if (!groupId) {
+    throw new Error("groupId is not available");
+  }
 
-    if (!uuid) {
-        throw new Error("missing uuid");
-    }
+  let roundIndex: number;
+  if (localStorage.getItem("showResultsFive")) {
+    roundIndex = 4;
+  } else if (localStorage.getItem("showResultsFour")) {
+    roundIndex = 3;
+  } else if (localStorage.getItem("showResultsThree")) {
+    roundIndex = 2;
+  } else if (localStorage.getItem("showResultsTwo")) {
+    roundIndex = 1;
+  } else if (localStorage.getItem("showResultsOne")) {
+    roundIndex = 0;
+  } else {
+    throw new Error("missing roundIndex");
+  }
 
-    let roundIndex;
-    if (localStorage.getItem("showResultsFive")) {
-        roundIndex = 4;
-    } else if (localStorage.getItem("showResultsFour")) {
-        roundIndex = 3;
-    } else if (localStorage.getItem("showResultsThree")) {
-        roundIndex = 2;
-    } else if (localStorage.getItem("showResultsTwo")) {
-        roundIndex = 1;
-    } else if (localStorage.getItem("showResultsOne")) {
-        roundIndex = 0;
-    } else {
-        throw new Error("missing roundIndex");
-    }
+  const roundInfos = getRoundInfos();
+  const roundInfo = roundInfos[roundIndex];
+  const roundName = tgRoundNames[roundIndex];
 
-    const dailyArray = normalizeDailyArray(JSON.parse(localStorage.getItem('dailyArray')!))
-    const roundInfo = dailyArray[roundIndex]
-    const roundName = ["one", "two", "three", "four", "five"][roundIndex];
+  const roundResult: RoundResult = {
+    totalPoints: Number(getRoundResultValue(`${roundName}Total`)),
+    locationPoints: Number(getRoundResultValue(`${roundName}Geo`)),
+    timePoints: Number(getRoundResultValue(`${roundName}Time`)),
+    yearsOff: Number(getRoundResultValue(`${roundName}Year`)),
+    distanceOff: getRoundResultValue(`${roundName}Distance`)!,
+    latitude: Number(getRoundResultValue(`${roundName}Lt`)),
+    longitude: Number(getRoundResultValue(`${roundName}Lng`)),
+    guessedYear: Number(getRoundResultValue("yearStorage")),
+    roundIndex: roundIndex,
+  };
 
-    const roundResult = {
-        totalPoints: Number(localStorage.getItem(roundName + "Total")),
-        locationPoints: Number(localStorage.getItem(roundName + "Geo")),
-        timePoints: Number(localStorage.getItem(roundName + "Time")),
-        yearsOff: Number(localStorage.getItem(roundName + "Year")),
-        distanceOff: localStorage.getItem(roundName + "Distance"),
-        latitude: Number(localStorage.getItem(roundName + "Lt")),
-        longitude: Number(localStorage.getItem(roundName + "Lng")),
-        guessedYear: Number(localStorage.getItem("yearStorage")),
-    };
+  const imageInfo: ImageInfo = {
+    latitude: roundInfo.Location.lat,
+    longitude: roundInfo.Location.lng,
+    country: roundInfo.Country,
+    year: Number(roundInfo.Year),
+    imageDescription: roundInfo.Description,
+    imageUrl: roundInfo.URL,
+  };
 
-    const requestBody = {
-        uuid: uuid,
-        roundResult: roundResult,
-        roundInfo: {
-            roundIndex,
-            ...roundInfo
-        },
-        dailyNo: roundInfo.No,
-    };
+  // submit own round result
+  await callApi("addRoundResult", {
+    groupId,
+    dailyNo,
+    roundIndex: String(roundIndex),
+    addRoundResultRequest: {
+      roundResult,
+      uuid,
+      imageInfo,
+    },
+  });
 
-    // send data to background script, get back data with other player results
-    const roundResults = await browser.runtime.sendMessage({
-        endpoint: '/roundResult', method: 'POST', body: requestBody,
-    });
+  // get all player results
+  const roundResults = await callApi("getRoundResults", {
+    groupId,
+    dailyNo,
+    roundIndex: String(roundIndex),
+  });
 
-    if (!roundResults || !roundResults.length) {
-        throw new Error("Submitting result failed: " + JSON.stringify(roundResults, null, 2));
-    }
-
-    return {
-        roundResults,
-        roundInfo,
-        playerUuid: uuid,
-    };
+  injectEnhancedBreakdown({
+    groupId,
+    uuid,
+    dailyNo,
+    roundResults,
+    roundInfo,
+  });
 }
 
-prepareData().then(injectDataAndScript).catch(err => console.error(err));
+run().catch((err) => console.error(err));

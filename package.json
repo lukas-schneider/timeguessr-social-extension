@@ -1,19 +1,24 @@
 {
   "name": "timeguessr-social-extension",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "compile": "tsc --noEmit",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "api:get": "aws --region eu-central-1 apigateway get-export --rest-api-id ck1hb2hxya --stage-name prod --export-type oas30 --accepts \"application/yaml\" openapi-spec.yaml",
+    "api:gen": "openapi-generator-cli generate",
+    "lint": "prettier --write ."
   },
   "devDependencies": {
-    "@types/webextension-polyfill": "^0.10.0",
-    "mapkit-typescript": "^5.18.2",
-    "typescript": "~5.6.3",
-    "vite": "^5.0.0",
-    "vite-plugin-web-extension": "^4.0.0",
-    "webextension-polyfill": "^0.10.0"
+    "@openapitools/openapi-generator-cli": "2.16.3",
+    "@types/webextension-polyfill": "0.12.1",
+    "mapkit-typescript": "5.18.2",
+    "prettier": "3.4.2",
+    "typescript": "5.7.3",
+    "vite": "6.0.11",
+    "vite-plugin-web-extension": "4.4.3",
+    "webextension-polyfill": "0.12.0"
   }
 }
