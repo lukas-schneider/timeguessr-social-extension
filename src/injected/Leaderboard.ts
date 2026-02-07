@@ -15,7 +15,8 @@ export class Leaderboard {
     this.div.innerHTML = this.getContent();
 
     const container = document.getElementById("resultsContainer")!;
-    container.insertBefore(this.div, container.firstChild);
+    // insert div as second child, after the breakdown header
+    container.insertBefore(this.div, container.children[1]);
   }
 
   getContent() {
@@ -28,8 +29,8 @@ export class Leaderboard {
           ?.map(
             (item: any, _index: number) => `
             <tr class="${item.playerUuid === this.data.uuid ? "its-you" : ""}">
-                <td class="tgs-initials">${item.initials}</td>
                 <td class="tgs-score">${item.score}</td>
+                <td class="tgs-initials">${item.initials}</td>
             </tr>
         `,
           )
@@ -38,7 +39,7 @@ export class Leaderboard {
     </table>
 </div>
 <div class="tgs-all-time">
-    <h3>All Time</h3>
+    <h3>All Time Top 5</h3>
     <table>
     <tbody>
         ${this.data.leaderboard.allTime

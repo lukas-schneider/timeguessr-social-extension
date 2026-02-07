@@ -1,24 +1,27 @@
 .tgs-leaderboard-container {
   color: #fff;
   font-size: 23px;
-  text-align: center;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 80px;
+  display: flex;
+  width: 100%;
+  padding: 20px;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 .tgs-daily {
-  grid-column: 1 / 2;
-  grid-row: 1;
+  text-align: left;
+
+  td {
+    padding-right: 20px;
+  }
 }
 
 .tgs-all-time {
-  grid-column: 2 / 4;
-  grid-row: 1;
+  text-align: right;
+
+  td {
+    padding-left: 20px;
+  }
 }
 
 .tgs-leaderboard-container table {
