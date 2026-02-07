@@ -3,9 +3,7 @@ import browser from "webextension-polyfill";
 
 export function injectEnhancedBreakdown(data: EnhancedBreakdownData) {
   sessionStorage.setItem("tgs.data", JSON.stringify(data));
-  injectScript(
-    browser.runtime.getURL("src/injected/enhancedBreakdown.js"),
-  );
+  injectScript(browser.runtime.getURL("src/injected/enhancedBreakdown.js"));
 }
 
 /**

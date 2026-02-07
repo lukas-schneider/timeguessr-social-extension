@@ -5,13 +5,11 @@ async function initSettings() {
   const $save = document.getElementById("save") as HTMLButtonElement;
   const $feedback = document.getElementById("feedback") as HTMLElement;
 
-  const $apiKey = document.getElementById("apiKey") as HTMLInputElement;
   const $groupId = document.getElementById("groupId") as HTMLInputElement;
   const $uuid = document.getElementById("uuid") as HTMLInputElement;
   const $initials = document.getElementById("initials") as HTMLInputElement;
 
-  const settings = await getSettings(["initials", "uuid", "groupId", "apiKey"]);
-  $apiKey.value = settings.apiKey ?? "";
+  const settings = await getSettings(["initials", "uuid", "groupId"]);
   $groupId.value = settings.groupId ?? "";
   $uuid.value = settings.uuid;
   $initials.value = settings.initials ?? "";
