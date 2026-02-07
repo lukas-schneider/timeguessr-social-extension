@@ -140,6 +140,68 @@ paths:
               schema:
                 type: "string"
           content: {}
+  /v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/submit-image:
+    post:
+      operationId: "submitImage"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitImageRequest"
+        required: true
+      responses:
+        "200":
+          description: "200 response"
+          content: {}
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
   /v2/group/{groupId}/leaderboard:
     get:
       operationId: "getLeaderboard"
@@ -274,6 +336,36 @@ paths:
           content: {}
 components:
   schemas:
+    AiGuessInfo:
+      required:
+        - "location"
+        - "locationName"
+        - "model"
+        - "prompt"
+        - "reasoning"
+        - "year"
+      type: "object"
+      properties:
+        year:
+          type: "number"
+        location:
+          required:
+            - "latitude"
+            - "longitude"
+          type: "object"
+          properties:
+            latitude:
+              type: "number"
+            longitude:
+              type: "number"
+        locationName:
+          type: "string"
+        reasoning:
+          type: "string"
+        prompt:
+          type: "string"
+        model:
+          type: "string"
     GetLeaderboardResponse:
       type: "object"
       properties:
@@ -305,6 +397,22 @@ components:
         uuid:
           type: "string"
         totalPoints:
+          type: "number"
+    SubmitImageRequest:
+      required:
+        - "actualLatitude"
+        - "actualLongitude"
+        - "actualYear"
+        - "imageUrl"
+      type: "object"
+      properties:
+        imageUrl:
+          type: "string"
+        actualYear:
+          type: "number"
+        actualLatitude:
+          type: "number"
+        actualLongitude:
           type: "number"
     UpdatePlayerResponse:
       required:
@@ -366,6 +474,8 @@ components:
         initials:
           maxLength: 3
           type: "string"
+        aiGuess:
+          $ref: "#/components/schemas/AiGuessInfo"
       allOf:
         - $ref: "#/components/schemas/RoundResult"
     AllTimeLeaderboardEntry:

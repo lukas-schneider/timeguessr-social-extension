@@ -16,12 +16,22 @@
     {
       "js": ["src/content/finalScoreDaily.ts"],
       "css": ["src/content/finalScoreDaily.css"],
-      "matches": ["https://timeguessr.com/finalscoredaily"]
+      "matches": ["https://timeguessr.com/finalscoredaily*"]
     },
     {
       "js": ["src/content/dailyRoundResults.ts"],
       "css": ["src/content/dailyRoundResults.css"],
-      "matches": ["https://timeguessr.com/dailyroundresults"]
+      "matches": ["https://timeguessr.com/dailyroundresults*"]
+    },
+    {
+      "js": ["src/content/dailyRound.ts"],
+      "matches": [
+        "https://timeguessr.com/roundonedaily*",
+        "https://timeguessr.com/roundtwodaily*",
+        "https://timeguessr.com/roundthreedaily*",
+        "https://timeguessr.com/roundfourdaily*",
+        "https://timeguessr.com/roundfivedaily*"
+      ]
     }
   ],
   "web_accessible_resources": [

@@ -8,6 +8,22 @@ export function getDailyNo(): string {
   return dailyNo;
 }
 
+export function getRoundIndex() {
+  if (localStorage.getItem("showResultsFive")) {
+    return 4;
+  } else if (localStorage.getItem("showResultsFour")) {
+    return 3;
+  } else if (localStorage.getItem("showResultsThree")) {
+    return 2;
+  } else if (localStorage.getItem("showResultsTwo")) {
+    return 1;
+  } else if (localStorage.getItem("showResultsOne")) {
+    return 0;
+  } else {
+    throw new Error("missing roundIndex");
+  }
+}
+
 export function getRoundInfos(): TgRoundInfo[] {
   const dailyArrayStr = localStorage.getItem("dailyArray");
   if (!dailyArrayStr) {

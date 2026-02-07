@@ -3,6 +3,8 @@ apis/index.ts
 index.ts
 models/AddDailyResultRequest.ts
 models/AddRoundResultRequest.ts
+models/AiGuessInfo.ts
+models/AiGuessInfoLocation.ts
 models/AllTimeLeaderboardEntry.ts
 models/DailyResults.ts
 models/GetLeaderboardResponse.ts
@@ -12,6 +14,7 @@ models/PlayerRoundResult.ts
 models/ResetTestResponse.ts
 models/RoundResult.ts
 models/RoundResults.ts
+models/SubmitImageRequest.ts
 models/UpdatePlayerRequest.ts
 models/UpdatePlayerResponse.ts
 models/index.ts

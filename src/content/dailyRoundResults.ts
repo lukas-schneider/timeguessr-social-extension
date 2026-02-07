@@ -1,6 +1,7 @@
 import { callApi, getSettings } from "../utils/extension.utils";
 import {
   getDailyNo,
+  getRoundIndex,
   getRoundInfos,
   getRoundResultValue,
 } from "../utils/timeguessr.utils";
@@ -15,21 +16,7 @@ async function run() {
     throw new Error("groupId is not available");
   }
 
-  let roundIndex: number;
-  if (localStorage.getItem("showResultsFive")) {
-    roundIndex = 4;
-  } else if (localStorage.getItem("showResultsFour")) {
-    roundIndex = 3;
-  } else if (localStorage.getItem("showResultsThree")) {
-    roundIndex = 2;
-  } else if (localStorage.getItem("showResultsTwo")) {
-    roundIndex = 1;
-  } else if (localStorage.getItem("showResultsOne")) {
-    roundIndex = 0;
-  } else {
-    throw new Error("missing roundIndex");
-  }
-
+  const roundIndex = getRoundIndex();
   const roundInfos = getRoundInfos();
   const roundInfo = roundInfos[roundIndex];
   const roundName = tgRoundNames[roundIndex];

@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from "../runtime";
+import type { AiGuessInfo } from "./AiGuessInfo";
+import {
+  AiGuessInfoFromJSON,
+  AiGuessInfoFromJSONTyped,
+  AiGuessInfoToJSON,
+  AiGuessInfoToJSONTyped,
+} from "./AiGuessInfo";
+
 /**
  *
  * @export
@@ -31,6 +39,12 @@ export interface PlayerRoundResult {
    * @memberof PlayerRoundResult
    */
   initials: string;
+  /**
+   *
+   * @type {AiGuessInfo}
+   * @memberof PlayerRoundResult
+   */
+  aiGuess?: AiGuessInfo;
   /**
    *
    * @type {number}
@@ -127,6 +141,10 @@ export function PlayerRoundResultFromJSONTyped(
   return {
     uuid: json["uuid"],
     initials: json["initials"],
+    aiGuess:
+      json["aiGuess"] == null
+        ? undefined
+        : AiGuessInfoFromJSON(json["aiGuess"]),
     roundIndex: json["roundIndex"],
     totalPoints: json["totalPoints"],
     locationPoints: json["locationPoints"],
@@ -154,6 +172,7 @@ export function PlayerRoundResultToJSONTyped(
   return {
     uuid: value["uuid"],
     initials: value["initials"],
+    aiGuess: AiGuessInfoToJSON(value["aiGuess"]),
     roundIndex: value["roundIndex"],
     totalPoints: value["totalPoints"],
     locationPoints: value["locationPoints"],

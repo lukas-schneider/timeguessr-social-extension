@@ -20,6 +20,7 @@ import type {
   GetLeaderboardResponse,
   ResetTestResponse,
   RoundResults,
+  SubmitImageRequest,
   UpdatePlayerRequest,
   UpdatePlayerResponse,
 } from "../models/index";
@@ -36,6 +37,8 @@ import {
   ResetTestResponseToJSON,
   RoundResultsFromJSON,
   RoundResultsToJSON,
+  SubmitImageRequestFromJSON,
+  SubmitImageRequestToJSON,
   UpdatePlayerRequestFromJSON,
   UpdatePlayerRequestToJSON,
   UpdatePlayerResponseFromJSON,
@@ -71,6 +74,13 @@ export interface GetRoundResultsRequest {
   groupId: string;
 }
 
+export interface SubmitImageOperationRequest {
+  dailyNo: string;
+  roundIndex: string;
+  groupId: string;
+  submitImageRequest: SubmitImageRequest;
+}
+
 export interface UpdatePlayerOperationRequest {
   groupId: string;
   updatePlayerRequest: UpdatePlayerRequest;
@@ -82,6 +92,12 @@ export interface V2GroupGroupIdDailyDailyNoResultOptionsRequest {
 }
 
 export interface V2GroupGroupIdDailyDailyNoRoundRoundIndexResultOptionsRequest {
+  dailyNo: string;
+  roundIndex: string;
+  groupId: string;
+}
+
+export interface V2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptionsRequest {
   dailyNo: string;
   roundIndex: string;
   groupId: string;
@@ -490,6 +506,86 @@ export class DefaultApi extends runtime.BaseAPI {
 
   /**
    */
+  async submitImageRaw(
+    requestParameters: SubmitImageOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters["dailyNo"] == null) {
+      throw new runtime.RequiredError(
+        "dailyNo",
+        'Required parameter "dailyNo" was null or undefined when calling submitImage().',
+      );
+    }
+
+    if (requestParameters["roundIndex"] == null) {
+      throw new runtime.RequiredError(
+        "roundIndex",
+        'Required parameter "roundIndex" was null or undefined when calling submitImage().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling submitImage().',
+      );
+    }
+
+    if (requestParameters["submitImageRequest"] == null) {
+      throw new runtime.RequiredError(
+        "submitImageRequest",
+        'Required parameter "submitImageRequest" was null or undefined when calling submitImage().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters["x-api-key"] =
+        await this.configuration.apiKey("x-api-key"); // api_key authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/submit-image`
+          .replace(
+            `{${"dailyNo"}}`,
+            encodeURIComponent(String(requestParameters["dailyNo"])),
+          )
+          .replace(
+            `{${"roundIndex"}}`,
+            encodeURIComponent(String(requestParameters["roundIndex"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "POST",
+        headers: headerParameters,
+        query: queryParameters,
+        body: SubmitImageRequestToJSON(requestParameters["submitImageRequest"]),
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async submitImage(
+    requestParameters: SubmitImageOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.submitImageRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   */
   async updatePlayerRaw(
     requestParameters: UpdatePlayerOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -673,6 +769,74 @@ export class DefaultApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.v2GroupGroupIdDailyDailyNoRoundRoundIndexResultOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
+   */
+  async v2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptionsRaw(
+    requestParameters: V2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters["dailyNo"] == null) {
+      throw new runtime.RequiredError(
+        "dailyNo",
+        'Required parameter "dailyNo" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptions().',
+      );
+    }
+
+    if (requestParameters["roundIndex"] == null) {
+      throw new runtime.RequiredError(
+        "roundIndex",
+        'Required parameter "roundIndex" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptions().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptions().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/submit-image`
+          .replace(
+            `{${"dailyNo"}}`,
+            encodeURIComponent(String(requestParameters["dailyNo"])),
+          )
+          .replace(
+            `{${"roundIndex"}}`,
+            encodeURIComponent(String(requestParameters["roundIndex"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async v2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptions(
+    requestParameters: V2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.v2GroupGroupIdDailyDailyNoRoundRoundIndexSubmitImageOptionsRaw(
       requestParameters,
       initOverrides,
     );

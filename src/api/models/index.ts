@@ -2,6 +2,8 @@
 /* eslint-disable */
 export * from "./AddDailyResultRequest";
 export * from "./AddRoundResultRequest";
+export * from "./AiGuessInfo";
+export * from "./AiGuessInfoLocation";
 export * from "./AllTimeLeaderboardEntry";
 export * from "./DailyResults";
 export * from "./GetLeaderboardResponse";
@@ -11,5 +13,6 @@ export * from "./PlayerRoundResult";
 export * from "./ResetTestResponse";
 export * from "./RoundResult";
 export * from "./RoundResults";
+export * from "./SubmitImageRequest";
 export * from "./UpdatePlayerRequest";
 export * from "./UpdatePlayerResponse";
