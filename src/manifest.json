@@ -20,6 +20,7 @@
     },
     {
       "js": ["src/content/dailyRoundResults.ts"],
+      "css": ["src/content/dailyRoundResults.css"],
       "matches": ["https://timeguessr.com/dailyroundresults"]
     }
   ],
