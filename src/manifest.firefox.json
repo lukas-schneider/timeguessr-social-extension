@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Timeguessr Social Extension",
+  "version": "2.0.0",
+  "icons": {
+    "32": "icon/32.png"
+  },
+  "action": {
+    "default_popup": "src/popup.html"
+  },
+  "permissions": ["storage"],
+  "background": {
+    "scripts": ["src/background.ts"]
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content/finalScoreDaily.ts"],
+      "css": ["src/content/finalScoreDaily.css"],
+      "matches": ["https://timeguessr.com/finalscoredaily*"]
+    },
+    {
+      "js": ["src/content/dailyRoundResults.ts"],
+      "css": ["src/content/dailyRoundResults.css"],
+      "matches": ["https://timeguessr.com/dailyroundresults*"]
+    },
+    {
+      "js": ["src/content/dailyRound.ts"],
+      "matches": [
+        "https://timeguessr.com/roundonedaily*",
+        "https://timeguessr.com/roundtwodaily*",
+        "https://timeguessr.com/roundthreedaily*",
+        "https://timeguessr.com/roundfourdaily*",
+        "https://timeguessr.com/roundfivedaily*"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/injected/enhancedBreakdown.js"],
+      "matches": ["https://timeguessr.com/*"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "timeguessr-social@extension.com",
+      "strict_min_version": "109.0"
+    }
+  }
+}
+

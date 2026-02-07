@@ -10,7 +10,7 @@
   },
   "permissions": ["storage"],
   "background": {
-    "{{chrome}}.service_worker": "src/background.ts"
+    "service_worker": "src/background.ts"
   },
   "content_scripts": [
     {
@@ -41,3 +41,4 @@
     }
   ]
 }
+

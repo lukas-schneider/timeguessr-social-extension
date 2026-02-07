@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "compile": "tsc --noEmit",
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "cross-env TARGET_BROWSER=chrome vite",
+    "dev:firefox": "cross-env TARGET_BROWSER=firefox vite",
+    "build": "npm run build:chrome && npm run build:firefox",
+    "build:chrome": "cross-env TARGET_BROWSER=chrome vite build",
+    "build:firefox": "cross-env TARGET_BROWSER=firefox vite build",
     "api:get": "aws --region eu-central-1 apigateway get-export --rest-api-id ck1hb2hxya --stage-name prod --export-type oas30 --accepts \"application/yaml\" openapi-spec.yaml",
     "api:gen": "openapi-generator-cli generate",
     "lint": "prettier --write ."
@@ -14,6 +17,7 @@
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.20.0",
     "@types/webextension-polyfill": "~0.12.1",
+    "cross-env": "^7.0.3",
     "mapkit-typescript": "^5.18.2",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
