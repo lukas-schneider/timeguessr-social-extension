@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Inject API key
         shell: bash
         env:
@@ -14,9 +14,9 @@ jobs:
         run: |-
           echo $EXTENSION_API_KEY > ./public/api-key.txt
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "22.x"
+          node-version: "24.x"
       - name: Build
         run: |-
           npm ci
@@ -42,7 +42,7 @@ jobs:
           name: timeguessr-social-extension-${{ github.ref_name }}
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "24.x"
       - name: Install webstore cli
         run: |-
           npm install -g chrome-webstore-upload-cli
