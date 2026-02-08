@@ -81,38 +81,3 @@ jobs:
       #            --upload-source-code timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
       #        env:
       #          WEB_EXT_SOURCE: timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
-      - name: Create changelog
-        uses: mikepenz/release-changelog-builder-action@v5
-        id: Changelog
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            ${{ steps.Changelog.outputs.changelog }}
-          draft: false
-          prerelease: false
-      - name: Upload Chrome Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./timeguessr-social-extension-chrome-${{ github.ref_name }}.zip
-          asset_name: timeguessr-social-extension-chrome-${{ github.ref_name }}.zip
-          asset_content_type: application/zip
-      - name: Upload Firefox Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
-          asset_name: timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
-          asset_content_type: application/zip
