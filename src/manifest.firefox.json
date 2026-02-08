@@ -44,7 +44,7 @@
     "gecko": {
       "id": "timeguessr-social@extension.com",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": ["websiteContent", "websiteActivity"]
       }
     }
   }
