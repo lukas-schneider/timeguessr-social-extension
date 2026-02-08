@@ -24,11 +24,13 @@ npm install
 ### Development Mode
 
 For Chrome:
+
 ```bash
 npm run dev
 ```
 
 For Firefox:
+
 ```bash
 npm run dev:firefox
 ```
@@ -36,21 +38,25 @@ npm run dev:firefox
 ### Building
 
 Build for both browsers:
+
 ```bash
 npm run build
 ```
 
 Build for Chrome only:
+
 ```bash
 npm run build:chrome
 ```
 
 Build for Firefox only:
+
 ```bash
 npm run build:firefox
 ```
 
 The build outputs are in:
+
 - `dist-chrome/` - Chrome extension
 - `dist-firefox/` - Firefox extension
 
@@ -59,12 +65,14 @@ The build outputs are in:
 ### GitHub Secrets Required
 
 For Chrome Web Store:
+
 - `CI_GOOGLE_CLIENT_ID` - Google OAuth client ID
 - `CI_GOOGLE_CLIENT_SECRET` - Google OAuth client secret
 - `CI_GOOGLE_REFRESH_TOKEN` - Google OAuth refresh token
 - `EXTENSION_API_KEY` - Extension API key
 
 For Firefox Add-ons:
+
 - `FIREFOX_API_KEY` - Firefox Add-ons API key (JWT issuer)
 - `FIREFOX_API_SECRET` - Firefox Add-ons API secret (JWT secret)
 
@@ -106,4 +114,3 @@ The extension uses `webextension-polyfill` to ensure API compatibility across br
 ## License
 
 See LICENSE file for details.
-

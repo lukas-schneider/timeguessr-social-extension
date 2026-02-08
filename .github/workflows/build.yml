@@ -67,20 +67,20 @@ jobs:
             --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \
             --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \
             --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
-#      - name: Install Firefox web-ext
-#        run: |-
-#          npm install -g web-ext
-#      - name: Upload to Firefox Add-ons
-#        run: |-
-#          web-ext sign \
-#            --channel=listed \
-#            --api-key=${{ secrets.FIREFOX_API_KEY }} \
-#            --api-secret=${{ secrets.FIREFOX_API_SECRET }} \
-#            --source-dir . \
-#            --artifacts-dir . \
-#            --upload-source-code timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
-#        env:
-#          WEB_EXT_SOURCE: timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
+      #      - name: Install Firefox web-ext
+      #        run: |-
+      #          npm install -g web-ext
+      #      - name: Upload to Firefox Add-ons
+      #        run: |-
+      #          web-ext sign \
+      #            --channel=listed \
+      #            --api-key=${{ secrets.FIREFOX_API_KEY }} \
+      #            --api-secret=${{ secrets.FIREFOX_API_SECRET }} \
+      #            --source-dir . \
+      #            --artifacts-dir . \
+      #            --upload-source-code timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
+      #        env:
+      #          WEB_EXT_SOURCE: timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
       - name: Create changelog
         uses: mikepenz/release-changelog-builder-action@v5
         id: Changelog

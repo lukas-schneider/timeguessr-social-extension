@@ -16,12 +16,17 @@ function generateManifest() {
 
 export default defineConfig({
   build: {
-    outDir: process.env.TARGET_BROWSER === "firefox" ? "dist-firefox" : "dist-chrome",
+    outDir:
+      process.env.TARGET_BROWSER === "firefox" ? "dist-firefox" : "dist-chrome",
   },
   plugins: [
     webExtension({
       manifest: generateManifest,
-      watchFilePaths: ["package.json", "src/manifest.chrome.json", "src/manifest.firefox.json"],
+      watchFilePaths: [
+        "package.json",
+        "src/manifest.chrome.json",
+        "src/manifest.firefox.json",
+      ],
       additionalInputs: ["src/injected/enhancedBreakdown.ts"],
     }),
   ],

@@ -32,4 +32,4 @@ async function run() {
 }
 
 // wait for daily array to be available in local storage before running
-setTimeout(()=>run().catch((err) => console.error(err)), 5000);
+setTimeout(() => run().catch((err) => console.error(err)), 5000);

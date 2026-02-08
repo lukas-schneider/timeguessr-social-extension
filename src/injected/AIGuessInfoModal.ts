@@ -25,7 +25,7 @@ export class AIGuessInfoModal {
     this.$showBtn = document.createElement("a");
     this.$showBtn.className = "tgs-show-btn";
     this.$showBtn.role = "button";
-    this.$showBtn.textContent = "Learn from GPT!";
+    this.$showBtn.textContent = "Learn from GPT";
     this.$showBtn.addEventListener("click", () => {
       this.open = !this.open;
       if (this.open) {
