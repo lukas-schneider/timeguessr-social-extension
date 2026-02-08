@@ -31,4 +31,5 @@ async function run() {
   console.log("Submitted image for AI guess");
 }
 
-run().catch((err) => console.error(err));
+// wait for daily array to be available in local storage before running
+setTimeout(()=>run().catch((err) => console.error(err)), 5000);
