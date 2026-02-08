@@ -1,5 +1,5 @@
 import { FinalResultEnhancedBreakdownData } from "../types/extension.types";
-import type {AllTimeLeaderboardEntry} from "../api";
+import type { AllTimeLeaderboardEntry } from "../api";
 
 export class Leaderboard {
   data: FinalResultEnhancedBreakdownData;
