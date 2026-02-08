@@ -21,6 +21,9 @@ export class AIGuessInfoModal {
     this.$modal = document.createElement("div");
     this.$modal.className = "tgs-modal";
     this.$modal.style.display = "none";
+
+    // All dynamic values in getContent() are sanitized using escapeHtml to prevent XSS.
+    // This is necessary for rendering the modal structure.
     this.$modal.innerHTML = this.getContent();
     this.$showBtn = document.createElement("a");
     this.$showBtn.className = "tgs-show-btn";

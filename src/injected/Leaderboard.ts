@@ -1,4 +1,5 @@
 import { FinalResultEnhancedBreakdownData } from "../types/extension.types";
+import type {AllTimeLeaderboardEntry} from "../api";
 
 export class Leaderboard {
   data: FinalResultEnhancedBreakdownData;
@@ -12,6 +13,9 @@ export class Leaderboard {
     this.data = data;
     this.div = document.createElement("div");
     this.div.className = "tgs-leaderboard-container";
+
+    // All dynamic values in getContent() are sanitized using escapeHtml to prevent XSS.
+    // This is necessary for rendering the modal structure.
     this.div.innerHTML = this.getContent();
 
     const container = document.getElementById("resultsContainer")!;
@@ -22,7 +26,7 @@ export class Leaderboard {
   getContent() {
     return `
 <div class="tgs-daily">
-    <h3>Daily ${this.data.dailyNo}</h3>
+    <h3>Daily ${this.escapeHtml(this.data.dailyNo)}</h3>
     <table>
     <tbody>
         ${this.data.leaderboard.today
@@ -30,7 +34,7 @@ export class Leaderboard {
             (item: any, _index: number) => `
             <tr class="${item.playerUuid === this.data.uuid ? "its-you" : ""}">
                 <td class="tgs-score">${item.score}</td>
-                <td class="tgs-initials">${item.initials}</td>
+                <td class="tgs-initials">${this.escapeHtml(item.initials)}</td>
             </tr>
         `,
           )
@@ -44,10 +48,10 @@ export class Leaderboard {
     <tbody>
         ${this.data.leaderboard.allTime
           ?.map(
-            (item: any, _index: number) => `
-            <tr class="${item.playerUuid === this.data.uuid ? "tgs-its-you" : ""}">
-                <td class="tgs-initials">${item.initials}</td>
-                <td class="tgs-daily-date">${item.dailyDate}</td>
+            (item: AllTimeLeaderboardEntry, _index: number) => `
+            <tr class="${item.uuid === this.data.uuid ? "tgs-its-you" : ""}">
+                <td class="tgs-initials">${this.escapeHtml(item.initials)}</td>
+                <td class="tgs-daily-date">${this.escapeHtml(item.dailyDate)}</td>
                 <td class="tgs-score">${item.score}</td>
             </tr>
         `,
@@ -56,5 +60,11 @@ export class Leaderboard {
     </tbody>
     </table>
 </div>`;
+  }
+
+  escapeHtml(text: string): string {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
   }
 }

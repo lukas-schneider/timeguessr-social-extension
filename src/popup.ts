@@ -49,20 +49,20 @@ async function initSettings() {
 
   function clearFeedback() {
     $save.disabled = true;
-    $feedback.innerHTML = "";
+    $feedback.textContent = "";
     $feedback.style.display = "none";
   }
 
   function showError(err: string) {
     $save.disabled = false;
-    $feedback.innerHTML = err ?? "error";
+    $feedback.textContent = err ?? "error";
     $feedback.style.display = "block";
     $feedback.style.color = "red";
   }
 
   function showSuccess() {
     $save.disabled = false;
-    $feedback.innerHTML = "saved";
+    $feedback.textContent = "saved";
     $feedback.style.display = "block";
     $feedback.style.color = "green";
   }

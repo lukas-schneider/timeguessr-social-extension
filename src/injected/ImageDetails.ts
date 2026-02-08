@@ -12,6 +12,9 @@ export class ImageDetails {
     this.data = data;
     this.$div = document.createElement("div");
     this.$div.style.display = "none";
+
+    // All dynamic values in getContent() are sanitized using escapeHtml to prevent XSS.
+    // This is necessary for rendering the modal structure.
     this.$div.innerHTML = this.getContent();
     this.$img = this.$div.querySelector(".tgs-image")!;
     this.wheelZoom = new WheelZoom(this.$img);
