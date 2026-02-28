@@ -1,12 +1,16 @@
 import { FinalResultEnhancedBreakdownData } from "../types/extension.types";
+import { RoundChat } from "./RoundChat";
+
 export class ImageDetails {
   data: FinalResultEnhancedBreakdownData;
 
   $div: HTMLDivElement;
   $img: HTMLImageElement;
   $description: HTMLElement;
+  $wrapper: HTMLElement;
 
   wheelZoom: WheelZoom;
+  chats: RoundChat[];
 
   constructor(data: FinalResultEnhancedBreakdownData) {
     this.data = data;
@@ -20,18 +24,34 @@ export class ImageDetails {
     this.wheelZoom = new WheelZoom(this.$img);
 
     this.$description = this.$div.querySelector(".tgs-image-description")!;
+    this.$wrapper = this.$div.querySelector(".tgs-image-wrapper")!;
     document.body.appendChild(this.$div);
 
     this.$div
       .querySelector(".tgs-close-button")!
       .addEventListener("click", () => this.hide());
+
+    // Create one RoundChat per round, mounted inside the image-details block.
+    // autoRefresh is off — we refresh manually when the panel is opened.
+    this.chats = [0, 1, 2, 3, 4].map(
+      (i) =>
+        new RoundChat({
+          uuid: data.uuid,
+          roundIndex: String(i),
+          comments: data.roundComments?.[i] ?? [],
+          container: this.$wrapper,
+          autoRefresh: false,
+        }),
+    );
+    // Hide all chat panels initially; they are shown per round in show()
+    this.chats.forEach((c) => c.hidePanel());
   }
 
   getContent() {
     return `
 <div class="tgs-image-details-block">
     <div class="tgs-close-button">Close</div>
-    <img class="tgs-image" src="" alt="">
+    <div class="tgs-image-wrapper"><img class="tgs-image" src="" alt=""></div>
     <p class="tgs-image-description"></p>
 </div>
         `;
@@ -42,11 +62,22 @@ export class ImageDetails {
     this.$description!.textContent = `${dailyInfo.Year}, ${dailyInfo.Country}: ${dailyInfo.Description}`;
     this.$img.src = dailyInfo.URL;
     this.$div.style.display = "block";
+
+    // Show only the chat for this round, hide the others
+    this.chats.forEach((c, i) => {
+      if (i === index) {
+        c.showPanel();
+        c.refresh();
+      } else {
+        c.hidePanel();
+      }
+    });
   }
 
   hide() {
     this.$div.style.display = "none";
     this.wheelZoom.reset();
+    this.chats.forEach((c) => c.hidePanel());
   }
 }
 

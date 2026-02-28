@@ -15,12 +15,12 @@
   "content_scripts": [
     {
       "js": ["src/content/finalScoreDaily.ts"],
-      "css": ["src/content/finalScoreDaily.css"],
+      "css": ["src/content/finalScoreDaily.css", "src/content/chat.css"],
       "matches": ["https://timeguessr.com/finalscoredaily*"]
     },
     {
       "js": ["src/content/dailyRoundResults.ts"],
-      "css": ["src/content/dailyRoundResults.css"],
+      "css": ["src/content/dailyRoundResults.css", "src/content/chat.css"],
       "matches": ["https://timeguessr.com/dailyroundresults*"]
     },
     {

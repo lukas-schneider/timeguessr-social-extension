@@ -51,7 +51,7 @@ function createAIGuessInfoModal(data: RoundResultEnhancedBreakdownData) {
 
 function createRoundChat(data: RoundResultEnhancedBreakdownData) {
   try {
-    new RoundChat(data);
+    RoundChat.fromRoundResult(data);
   } catch (e) {
     console.error("Error creating round chat", e);
   }

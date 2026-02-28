@@ -28,14 +28,90 @@ async function run() {
       totalPoints,
     },
   });
-  const dailyResults = await callApi("getDailyResults", {
-    groupId,
-    dailyNo,
+  const [dailyResults, leaderboard, roundComments] = await Promise.all([
+    callApi("getDailyResults", { groupId, dailyNo }),
+    callApi("getLeaderboard", { groupId, dailyNo }),
+    Promise.all(
+      [0, 1, 2, 3, 4].map((i) =>
+        callApi("getComments", {
+          groupId,
+          dailyNo,
+          roundIndex: String(i),
+        }).then(({ comments }) => comments),
+      ),
+    ),
+  ]);
+
+  // Bridge: CustomEvents from injected page-context script → content script API calls.
+  // detail is always a JSON string (Firefox Xray restriction).
+  // roundIndex is included in every payload so a single listener handles all 5 rounds.
+  window.addEventListener("tgs:chat:send", async (e: Event) => {
+    const { roundIndex, text } = JSON.parse((e as CustomEvent<string>).detail);
+    try {
+      const comment = await callApi("addComment", {
+        groupId,
+        dailyNo,
+        roundIndex,
+        addCommentRequest: { uuid, text },
+      });
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:added", { detail: JSON.stringify(comment) }),
+      );
+    } catch (err) {
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:error", {
+          detail: JSON.stringify({ message: String(err) }),
+        }),
+      );
+    }
   });
 
-  const leaderboard = await callApi("getLeaderboard", {
-    groupId,
-    dailyNo,
+  window.addEventListener("tgs:chat:delete", async (e: Event) => {
+    const { roundIndex, commentId } = JSON.parse(
+      (e as CustomEvent<string>).detail,
+    );
+    try {
+      await callApi("deleteComment", {
+        groupId,
+        dailyNo,
+        roundIndex,
+        commentId,
+        deleteCommentRequest: { uuid },
+      });
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:deleted", {
+          detail: JSON.stringify({ commentId }),
+        }),
+      );
+    } catch (err) {
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:error", {
+          detail: JSON.stringify({ message: String(err) }),
+        }),
+      );
+    }
+  });
+
+  window.addEventListener("tgs:chat:refresh", async (e: Event) => {
+    const { roundIndex } = JSON.parse((e as CustomEvent<string>).detail);
+    try {
+      const { comments } = await callApi("getComments", {
+        groupId,
+        dailyNo,
+        roundIndex,
+      });
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:refreshed", {
+          detail: JSON.stringify(comments),
+        }),
+      );
+    } catch (err) {
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:error", {
+          detail: JSON.stringify({ message: String(err) }),
+        }),
+      );
+    }
   });
 
   injectEnhancedBreakdown({
@@ -45,6 +121,7 @@ async function run() {
     leaderboard,
     dailyResults,
     roundInfos,
+    roundComments,
   });
 }
 

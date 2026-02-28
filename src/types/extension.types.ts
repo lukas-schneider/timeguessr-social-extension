@@ -57,6 +57,7 @@ export interface FinalResultEnhancedBreakdownData {
   leaderboard: GetLeaderboardResponse;
   dailyResults: DailyResults;
   roundInfos: TgRoundInfo[];
+  roundComments: Comment[][];
 }
 
 export interface RoundResultEnhancedBreakdownData {

@@ -1,8 +1,17 @@
 import { Comment } from "../api";
 import { RoundResultEnhancedBreakdownData } from "../types/extension.types";
 
+export interface RoundChatConfig {
+  uuid: string;
+  roundIndex: string;
+  comments: Comment[];
+  container: HTMLElement;
+  autoRefresh?: boolean;
+}
+
 export class RoundChat {
   private uuid: string;
+  private roundIndex: string;
   private comments: Comment[];
   private open: boolean = false;
   private $wrapper: HTMLDivElement;
@@ -12,14 +21,24 @@ export class RoundChat {
   private $toggleBtn: HTMLButtonElement;
   private $sendBtn: HTMLButtonElement;
 
-  constructor(data: RoundResultEnhancedBreakdownData) {
-    this.uuid = data.uuid;
-    this.comments = data.comments ?? [];
-
+  static fromRoundResult(data: RoundResultEnhancedBreakdownData): RoundChat {
     const photoContainer = document.getElementById("photoContainer");
     if (!photoContainer) {
       throw new Error("Could not find #photoContainer");
     }
+    return new RoundChat({
+      uuid: data.uuid,
+      roundIndex: data.roundIndex,
+      comments: data.comments ?? [],
+      container: photoContainer,
+      autoRefresh: true,
+    });
+  }
+
+  constructor(config: RoundChatConfig) {
+    this.uuid = config.uuid;
+    this.roundIndex = config.roundIndex;
+    this.comments = config.comments ?? [];
 
     this.$wrapper = document.createElement("div");
     this.$wrapper.className = "tgs-chat-wrapper";
@@ -40,26 +59,34 @@ export class RoundChat {
     this.$input = this.$wrapper.querySelector(".tgs-chat-input")!;
     this.$sendBtn = this.$wrapper.querySelector(".tgs-chat-send")!;
 
-    photoContainer.appendChild(this.$wrapper);
+    config.container.appendChild(this.$wrapper);
 
     this.renderMessages();
     this.bindEvents();
 
-    // Auto-refresh every 30 seconds
-    setInterval(() => this.refresh(), 30_000);
+    if (config.autoRefresh !== false) {
+      setInterval(() => this.refresh(), 30_000);
+    }
+  }
+
+  showPanel() {
+    this.open = true;
+    this.$panel.style.display = "flex";
+  }
+
+  hidePanel() {
+    this.open = false;
+    this.$panel.style.display = "none";
   }
 
   private bindEvents() {
-    // Toggle open/close
     this.$toggleBtn.addEventListener("click", () => {
       this.open = !this.open;
       this.$panel.style.display = this.open ? "flex" : "none";
     });
 
-    // Send on button click
     this.$sendBtn.addEventListener("click", () => this.send());
 
-    // Send on Enter key
     this.$input.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         this.send();
@@ -74,9 +101,11 @@ export class RoundChat {
     this.$input.disabled = true;
     this.$sendBtn.disabled = true;
 
-    // detail must be a JSON string — objects in CustomEvent.detail are Xray-wrapped
-    // by Firefox and inaccessible from page-context scripts
-    window.dispatchEvent(new CustomEvent("tgs:chat:send", { detail: JSON.stringify({ text }) }));
+    window.dispatchEvent(
+      new CustomEvent("tgs:chat:send", {
+        detail: JSON.stringify({ roundIndex: this.roundIndex, text }),
+      }),
+    );
 
     const onAdded = (e: Event) => {
       const comment: Comment = JSON.parse((e as CustomEvent<string>).detail);
@@ -101,12 +130,18 @@ export class RoundChat {
   private handleDelete(commentId: string, $btn: HTMLButtonElement) {
     $btn.disabled = true;
 
-    window.dispatchEvent(new CustomEvent("tgs:chat:delete", { detail: JSON.stringify({ commentId }) }));
+    window.dispatchEvent(
+      new CustomEvent("tgs:chat:delete", {
+        detail: JSON.stringify({ roundIndex: this.roundIndex, commentId }),
+      }),
+    );
 
     window.addEventListener(
       "tgs:chat:deleted",
       (e: Event) => {
-        const { commentId: deletedId }: { commentId: string } = JSON.parse((e as CustomEvent<string>).detail);
+        const { commentId: deletedId }: { commentId: string } = JSON.parse(
+          (e as CustomEvent<string>).detail,
+        );
         this.comments = this.comments.filter((c) => c.commentId !== deletedId);
         this.renderMessages();
       },
@@ -114,8 +149,12 @@ export class RoundChat {
     );
   }
 
-  private refresh() {
-    window.dispatchEvent(new CustomEvent("tgs:chat:refresh"));
+  refresh() {
+    window.dispatchEvent(
+      new CustomEvent("tgs:chat:refresh", {
+        detail: JSON.stringify({ roundIndex: this.roundIndex }),
+      }),
+    );
 
     window.addEventListener(
       "tgs:chat:refreshed",
@@ -144,7 +183,9 @@ export class RoundChat {
         $del.className = "tgs-chat-delete";
         $del.textContent = "🗑";
         $del.title = "Delete message";
-        $del.addEventListener("click", () => this.handleDelete(comment.commentId, $del));
+        $del.addEventListener("click", () =>
+          this.handleDelete(comment.commentId, $del),
+        );
         $msg.appendChild($del);
       }
 
@@ -160,4 +201,3 @@ export class RoundChat {
     return div.innerHTML;
   }
 }
-

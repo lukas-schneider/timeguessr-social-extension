@@ -24,12 +24,12 @@ async function migrateServerUrl() {
 }
 
 browser.runtime.onInstalled.addListener(async (details) => {
-  const apiKey = await fetch(browser.runtime.getURL("api-key.txt")).then(
-    (res) => res.text(),
-  ).catch((err) => {
-    console.error("Failed to load API key", err);
-    return null;
-  });
+  const apiKey = await fetch(browser.runtime.getURL("api-key.txt"))
+    .then((res) => res.text())
+    .catch((err) => {
+      console.error("Failed to load API key", err);
+      return null;
+    });
   if (!apiKey) {
     console.warn("API key is not available");
     return;

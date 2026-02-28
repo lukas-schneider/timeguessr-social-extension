@@ -72,46 +72,73 @@ async function run() {
   // NOTE: detail must be a plain string — Firefox's Xray wrapper blocks all property
   // access on objects passed as CustomEvent.detail across the page/content-script boundary.
   window.addEventListener("tgs:chat:send", async (e: Event) => {
-    const { text } = JSON.parse((e as CustomEvent<string>).detail);
+    const { roundIndex: ri, text } = JSON.parse(
+      (e as CustomEvent<string>).detail,
+    );
     try {
       const comment = await callApi("addComment", {
         groupId,
         dailyNo,
-        roundIndex: String(roundIndex),
+        roundIndex: ri ?? String(roundIndex),
         addCommentRequest: { uuid, text },
       });
-      window.dispatchEvent(new CustomEvent("tgs:chat:added", { detail: JSON.stringify(comment) }));
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:added", { detail: JSON.stringify(comment) }),
+      );
     } catch (err) {
-      window.dispatchEvent(new CustomEvent("tgs:chat:error", { detail: JSON.stringify({ message: String(err) }) }));
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:error", {
+          detail: JSON.stringify({ message: String(err) }),
+        }),
+      );
     }
   });
 
   window.addEventListener("tgs:chat:delete", async (e: Event) => {
-    const { commentId } = JSON.parse((e as CustomEvent<string>).detail);
+    const { roundIndex: ri, commentId } = JSON.parse(
+      (e as CustomEvent<string>).detail,
+    );
     try {
       await callApi("deleteComment", {
         groupId,
         dailyNo,
-        roundIndex: String(roundIndex),
+        roundIndex: ri ?? String(roundIndex),
         commentId,
         deleteCommentRequest: { uuid },
       });
-      window.dispatchEvent(new CustomEvent("tgs:chat:deleted", { detail: JSON.stringify({ commentId }) }));
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:deleted", {
+          detail: JSON.stringify({ commentId }),
+        }),
+      );
     } catch (err) {
-      window.dispatchEvent(new CustomEvent("tgs:chat:error", { detail: JSON.stringify({ message: String(err) }) }));
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:error", {
+          detail: JSON.stringify({ message: String(err) }),
+        }),
+      );
     }
   });
 
-  window.addEventListener("tgs:chat:refresh", async () => {
+  window.addEventListener("tgs:chat:refresh", async (e: Event) => {
+    const { roundIndex: ri } = JSON.parse((e as CustomEvent<string>).detail);
     try {
       const { comments: refreshed } = await callApi("getComments", {
         groupId,
         dailyNo,
-        roundIndex: String(roundIndex),
+        roundIndex: ri ?? String(roundIndex),
       });
-      window.dispatchEvent(new CustomEvent("tgs:chat:refreshed", { detail: JSON.stringify(refreshed) }));
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:refreshed", {
+          detail: JSON.stringify(refreshed),
+        }),
+      );
     } catch (err) {
-      window.dispatchEvent(new CustomEvent("tgs:chat:error", { detail: JSON.stringify({ message: String(err) }) }));
+      window.dispatchEvent(
+        new CustomEvent("tgs:chat:error", {
+          detail: JSON.stringify({ message: String(err) }),
+        }),
+      );
     }
   });
 
