@@ -13,6 +13,7 @@ export async function getSettings<K extends keyof Settings>(
 }
 
 export async function updateSettings(settings: Partial<Settings>) {
+  console.log("Updating settings", settings);
   await browser.storage.local.set(settings);
 }
 

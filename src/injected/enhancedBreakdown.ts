@@ -1,6 +1,7 @@
 import { ImageDetails } from "./ImageDetails";
 import { EnhancedMap } from "./EnhancedMap";
 import { Leaderboard } from "./Leaderboard";
+import { RoundChat } from "./RoundChat";
 import {
   getEnhancedBreakdownData,
   isFinalResult,
@@ -28,6 +29,7 @@ function initEnhancedBreakdown() {
 
   if (isRoundResult(data)) {
     createAIGuessInfoModal(data);
+    createRoundChat(data);
   }
 }
 
@@ -44,6 +46,14 @@ function createAIGuessInfoModal(data: RoundResultEnhancedBreakdownData) {
     new AIGuessInfoModal(data);
   } catch (e) {
     console.error("Error creating AI guess info modal", e);
+  }
+}
+
+function createRoundChat(data: RoundResultEnhancedBreakdownData) {
+  try {
+    new RoundChat(data);
+  } catch (e) {
+    console.error("Error creating round chat", e);
   }
 }
 

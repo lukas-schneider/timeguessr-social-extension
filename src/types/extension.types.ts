@@ -1,4 +1,5 @@
 import {
+  Comment,
   DailyResults,
   DefaultApi,
   GetLeaderboardResponse,
@@ -62,8 +63,10 @@ export interface RoundResultEnhancedBreakdownData {
   groupId: string;
   uuid: string;
   dailyNo: string;
+  roundIndex: string;
   roundResults: RoundResults;
   roundInfo: TgRoundInfo;
+  comments: Comment[];
 }
 
 export type EnhancedBreakdownData =
