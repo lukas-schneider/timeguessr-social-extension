@@ -14,10 +14,15 @@
 
 import * as runtime from "../runtime";
 import type {
+  AddCommentRequest,
   AddDailyResultRequest,
   AddRoundResultRequest,
+  Comment,
   DailyResults,
+  DeleteCommentRequest,
+  GetCommentsResponse,
   GetLeaderboardResponse,
+  PersonalTopScoresResponse,
   ResetTestResponse,
   RoundResults,
   SubmitImageRequest,
@@ -25,14 +30,24 @@ import type {
   UpdatePlayerResponse,
 } from "../models/index";
 import {
+  AddCommentRequestFromJSON,
+  AddCommentRequestToJSON,
   AddDailyResultRequestFromJSON,
   AddDailyResultRequestToJSON,
   AddRoundResultRequestFromJSON,
   AddRoundResultRequestToJSON,
+  CommentFromJSON,
+  CommentToJSON,
   DailyResultsFromJSON,
   DailyResultsToJSON,
+  DeleteCommentRequestFromJSON,
+  DeleteCommentRequestToJSON,
+  GetCommentsResponseFromJSON,
+  GetCommentsResponseToJSON,
   GetLeaderboardResponseFromJSON,
   GetLeaderboardResponseToJSON,
+  PersonalTopScoresResponseFromJSON,
+  PersonalTopScoresResponseToJSON,
   ResetTestResponseFromJSON,
   ResetTestResponseToJSON,
   RoundResultsFromJSON,
@@ -44,6 +59,13 @@ import {
   UpdatePlayerResponseFromJSON,
   UpdatePlayerResponseToJSON,
 } from "../models/index";
+
+export interface AddCommentOperationRequest {
+  dailyNo: string;
+  roundIndex: string;
+  groupId: string;
+  addCommentRequest: AddCommentRequest;
+}
 
 export interface AddDailyResultOperationRequest {
   dailyNo: string;
@@ -58,6 +80,20 @@ export interface AddRoundResultOperationRequest {
   addRoundResultRequest: AddRoundResultRequest;
 }
 
+export interface DeleteCommentOperationRequest {
+  dailyNo: string;
+  roundIndex: string;
+  commentId: string;
+  groupId: string;
+  deleteCommentRequest: DeleteCommentRequest;
+}
+
+export interface GetCommentsRequest {
+  dailyNo: string;
+  roundIndex: string;
+  groupId: string;
+}
+
 export interface GetDailyResultsRequest {
   dailyNo: string;
   groupId: string;
@@ -66,6 +102,11 @@ export interface GetDailyResultsRequest {
 export interface GetLeaderboardRequest {
   groupId: string;
   dailyNo?: string;
+}
+
+export interface GetPersonalTopScoresRequest {
+  uuid: string;
+  groupId: string;
 }
 
 export interface GetRoundResultsRequest {
@@ -91,6 +132,19 @@ export interface V2GroupGroupIdDailyDailyNoResultOptionsRequest {
   groupId: string;
 }
 
+export interface V2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptionsRequest {
+  dailyNo: string;
+  roundIndex: string;
+  commentId: string;
+  groupId: string;
+}
+
+export interface V2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptionsRequest {
+  dailyNo: string;
+  roundIndex: string;
+  groupId: string;
+}
+
 export interface V2GroupGroupIdDailyDailyNoRoundRoundIndexResultOptionsRequest {
   dailyNo: string;
   roundIndex: string;
@@ -111,10 +165,98 @@ export interface V2GroupGroupIdPlayerOptionsRequest {
   groupId: string;
 }
 
+export interface V2GroupGroupIdPlayerUuidTopScoresOptionsRequest {
+  uuid: string;
+  groupId: string;
+}
+
 /**
  *
  */
 export class DefaultApi extends runtime.BaseAPI {
+  /**
+   */
+  async addCommentRaw(
+    requestParameters: AddCommentOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Comment>> {
+    if (requestParameters["dailyNo"] == null) {
+      throw new runtime.RequiredError(
+        "dailyNo",
+        'Required parameter "dailyNo" was null or undefined when calling addComment().',
+      );
+    }
+
+    if (requestParameters["roundIndex"] == null) {
+      throw new runtime.RequiredError(
+        "roundIndex",
+        'Required parameter "roundIndex" was null or undefined when calling addComment().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling addComment().',
+      );
+    }
+
+    if (requestParameters["addCommentRequest"] == null) {
+      throw new runtime.RequiredError(
+        "addCommentRequest",
+        'Required parameter "addCommentRequest" was null or undefined when calling addComment().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters["x-api-key"] =
+        await this.configuration.apiKey("x-api-key"); // api_key authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/comments`
+          .replace(
+            `{${"dailyNo"}}`,
+            encodeURIComponent(String(requestParameters["dailyNo"])),
+          )
+          .replace(
+            `{${"roundIndex"}}`,
+            encodeURIComponent(String(requestParameters["roundIndex"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "POST",
+        headers: headerParameters,
+        query: queryParameters,
+        body: AddCommentRequestToJSON(requestParameters["addCommentRequest"]),
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CommentFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   */
+  async addComment(
+    requestParameters: AddCommentOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Comment> {
+    const response = await this.addCommentRaw(requestParameters, initOverrides);
+    return await response.value();
+  }
+
   /**
    */
   async addDailyResultRaw(
@@ -270,6 +412,175 @@ export class DefaultApi extends runtime.BaseAPI {
 
   /**
    */
+  async deleteCommentRaw(
+    requestParameters: DeleteCommentOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters["dailyNo"] == null) {
+      throw new runtime.RequiredError(
+        "dailyNo",
+        'Required parameter "dailyNo" was null or undefined when calling deleteComment().',
+      );
+    }
+
+    if (requestParameters["roundIndex"] == null) {
+      throw new runtime.RequiredError(
+        "roundIndex",
+        'Required parameter "roundIndex" was null or undefined when calling deleteComment().',
+      );
+    }
+
+    if (requestParameters["commentId"] == null) {
+      throw new runtime.RequiredError(
+        "commentId",
+        'Required parameter "commentId" was null or undefined when calling deleteComment().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling deleteComment().',
+      );
+    }
+
+    if (requestParameters["deleteCommentRequest"] == null) {
+      throw new runtime.RequiredError(
+        "deleteCommentRequest",
+        'Required parameter "deleteCommentRequest" was null or undefined when calling deleteComment().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters["x-api-key"] =
+        await this.configuration.apiKey("x-api-key"); // api_key authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/comments/{commentId}`
+          .replace(
+            `{${"dailyNo"}}`,
+            encodeURIComponent(String(requestParameters["dailyNo"])),
+          )
+          .replace(
+            `{${"roundIndex"}}`,
+            encodeURIComponent(String(requestParameters["roundIndex"])),
+          )
+          .replace(
+            `{${"commentId"}}`,
+            encodeURIComponent(String(requestParameters["commentId"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "DELETE",
+        headers: headerParameters,
+        query: queryParameters,
+        body: DeleteCommentRequestToJSON(
+          requestParameters["deleteCommentRequest"],
+        ),
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async deleteComment(
+    requestParameters: DeleteCommentOperationRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.deleteCommentRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   */
+  async getCommentsRaw(
+    requestParameters: GetCommentsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<GetCommentsResponse>> {
+    if (requestParameters["dailyNo"] == null) {
+      throw new runtime.RequiredError(
+        "dailyNo",
+        'Required parameter "dailyNo" was null or undefined when calling getComments().',
+      );
+    }
+
+    if (requestParameters["roundIndex"] == null) {
+      throw new runtime.RequiredError(
+        "roundIndex",
+        'Required parameter "roundIndex" was null or undefined when calling getComments().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling getComments().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters["x-api-key"] =
+        await this.configuration.apiKey("x-api-key"); // api_key authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/comments`
+          .replace(
+            `{${"dailyNo"}}`,
+            encodeURIComponent(String(requestParameters["dailyNo"])),
+          )
+          .replace(
+            `{${"roundIndex"}}`,
+            encodeURIComponent(String(requestParameters["roundIndex"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      GetCommentsResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   */
+  async getComments(
+    requestParameters: GetCommentsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<GetCommentsResponse> {
+    const response = await this.getCommentsRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   */
   async getDailyResultsRaw(
     requestParameters: GetDailyResultsRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -384,6 +695,71 @@ export class DefaultApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<GetLeaderboardResponse> {
     const response = await this.getLeaderboardRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   */
+  async getPersonalTopScoresRaw(
+    requestParameters: GetPersonalTopScoresRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<PersonalTopScoresResponse>> {
+    if (requestParameters["uuid"] == null) {
+      throw new runtime.RequiredError(
+        "uuid",
+        'Required parameter "uuid" was null or undefined when calling getPersonalTopScores().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling getPersonalTopScores().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters["x-api-key"] =
+        await this.configuration.apiKey("x-api-key"); // api_key authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/player/{uuid}/top-scores`
+          .replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      PersonalTopScoresResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   */
+  async getPersonalTopScores(
+    requestParameters: GetPersonalTopScoresRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<PersonalTopScoresResponse> {
+    const response = await this.getPersonalTopScoresRaw(
       requestParameters,
       initOverrides,
     );
@@ -708,6 +1084,153 @@ export class DefaultApi extends runtime.BaseAPI {
 
   /**
    */
+  async v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptionsRaw(
+    requestParameters: V2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters["dailyNo"] == null) {
+      throw new runtime.RequiredError(
+        "dailyNo",
+        'Required parameter "dailyNo" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptions().',
+      );
+    }
+
+    if (requestParameters["roundIndex"] == null) {
+      throw new runtime.RequiredError(
+        "roundIndex",
+        'Required parameter "roundIndex" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptions().',
+      );
+    }
+
+    if (requestParameters["commentId"] == null) {
+      throw new runtime.RequiredError(
+        "commentId",
+        'Required parameter "commentId" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptions().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptions().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/comments/{commentId}`
+          .replace(
+            `{${"dailyNo"}}`,
+            encodeURIComponent(String(requestParameters["dailyNo"])),
+          )
+          .replace(
+            `{${"roundIndex"}}`,
+            encodeURIComponent(String(requestParameters["roundIndex"])),
+          )
+          .replace(
+            `{${"commentId"}}`,
+            encodeURIComponent(String(requestParameters["commentId"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptions(
+    requestParameters: V2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsCommentIdOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
+   */
+  async v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptionsRaw(
+    requestParameters: V2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters["dailyNo"] == null) {
+      throw new runtime.RequiredError(
+        "dailyNo",
+        'Required parameter "dailyNo" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptions().',
+      );
+    }
+
+    if (requestParameters["roundIndex"] == null) {
+      throw new runtime.RequiredError(
+        "roundIndex",
+        'Required parameter "roundIndex" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptions().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptions().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/comments`
+          .replace(
+            `{${"dailyNo"}}`,
+            encodeURIComponent(String(requestParameters["dailyNo"])),
+          )
+          .replace(
+            `{${"roundIndex"}}`,
+            encodeURIComponent(String(requestParameters["roundIndex"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptions(
+    requestParameters: V2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.v2GroupGroupIdDailyDailyNoRoundRoundIndexCommentsOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
+   */
   async v2GroupGroupIdDailyDailyNoRoundRoundIndexResultOptionsRaw(
     requestParameters: V2GroupGroupIdDailyDailyNoRoundRoundIndexResultOptionsRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -927,5 +1450,62 @@ export class DefaultApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.v2GroupGroupIdPlayerOptionsRaw(requestParameters, initOverrides);
+  }
+
+  /**
+   */
+  async v2GroupGroupIdPlayerUuidTopScoresOptionsRaw(
+    requestParameters: V2GroupGroupIdPlayerUuidTopScoresOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters["uuid"] == null) {
+      throw new runtime.RequiredError(
+        "uuid",
+        'Required parameter "uuid" was null or undefined when calling v2GroupGroupIdPlayerUuidTopScoresOptions().',
+      );
+    }
+
+    if (requestParameters["groupId"] == null) {
+      throw new runtime.RequiredError(
+        "groupId",
+        'Required parameter "groupId" was null or undefined when calling v2GroupGroupIdPlayerUuidTopScoresOptions().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/v2/group/{groupId}/player/{uuid}/top-scores`
+          .replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+          )
+          .replace(
+            `{${"groupId"}}`,
+            encodeURIComponent(String(requestParameters["groupId"])),
+          ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async v2GroupGroupIdPlayerUuidTopScoresOptions(
+    requestParameters: V2GroupGroupIdPlayerUuidTopScoresOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.v2GroupGroupIdPlayerUuidTopScoresOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
   }
 }

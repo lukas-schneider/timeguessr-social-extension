@@ -202,6 +202,133 @@ paths:
               schema:
                 type: "string"
           content: {}
+  /v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/comments/{commentId}:
+    delete:
+      operationId: "deleteComment"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "commentId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteCommentRequest"
+        required: true
+      responses:
+        "404":
+          description: "404 response"
+          content: {}
+        "204":
+          description: "204 response"
+          content: {}
+        "403":
+          description: "403 response"
+          content: {}
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "commentId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+  /v2/group/{groupId}/player/{uuid}/top-scores:
+    get:
+      operationId: "getPersonalTopScores"
+      parameters:
+        - name: "uuid"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalTopScoresResponse"
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "uuid"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
   /v2/group/{groupId}/leaderboard:
     get:
       operationId: "getLeaderboard"
@@ -334,8 +461,121 @@ paths:
               schema:
                 type: "string"
           content: {}
+  /v2/group/{groupId}/daily/{dailyNo}/round/{roundIndex}/comments:
+    get:
+      operationId: "getComments"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCommentsResponse"
+      security:
+        - api_key: []
+    post:
+      operationId: "addComment"
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddCommentRequest"
+        required: true
+      responses:
+        "201":
+          description: "201 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+      security:
+        - api_key: []
+    options:
+      parameters:
+        - name: "dailyNo"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "roundIndex"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "groupId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
 components:
   schemas:
+    Comment:
+      required:
+        - "commentId"
+        - "createdAt"
+        - "initials"
+        - "playerUuid"
+        - "text"
+      type: "object"
+      properties:
+        commentId:
+          type: "string"
+        playerUuid:
+          type: "string"
+        initials:
+          maxLength: 3
+          type: "string"
+        text:
+          maxLength: 500
+          type: "string"
+        createdAt:
+          type: "string"
     AiGuessInfo:
       required:
         - "location"
@@ -366,6 +606,13 @@ components:
           type: "string"
         model:
           type: "string"
+    DeleteCommentRequest:
+      required:
+        - "uuid"
+      type: "object"
+      properties:
+        uuid:
+          type: "string"
     GetLeaderboardResponse:
       type: "object"
       properties:
@@ -377,6 +624,20 @@ components:
           type: "array"
           items:
             $ref: "#/components/schemas/LeaderboardEntry"
+    PersonalTopScore:
+      required:
+        - "dailyDate"
+        - "initials"
+        - "score"
+      type: "object"
+      properties:
+        dailyDate:
+          type: "string"
+        score:
+          type: "number"
+        initials:
+          maxLength: 3
+          type: "string"
     UpdatePlayerRequest:
       required:
         - "initials"
@@ -459,6 +720,15 @@ components:
           type: "number"
         guessedYear:
           type: "number"
+    GetCommentsResponse:
+      required:
+        - "comments"
+      type: "object"
+      properties:
+        comments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Comment"
     RoundResults:
       type: "array"
       items:
@@ -478,6 +748,17 @@ components:
           $ref: "#/components/schemas/AiGuessInfo"
       allOf:
         - $ref: "#/components/schemas/RoundResult"
+    AddCommentRequest:
+      required:
+        - "text"
+        - "uuid"
+      type: "object"
+      properties:
+        uuid:
+          type: "string"
+        text:
+          maxLength: 500
+          type: "string"
     AllTimeLeaderboardEntry:
       required:
         - "dailyDate"
@@ -526,6 +807,10 @@ components:
           type: "string"
         imageUrl:
           type: "string"
+    PersonalTopScoresResponse:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/PersonalTopScore"
     LeaderboardEntry:
       required:
         - "initials"
