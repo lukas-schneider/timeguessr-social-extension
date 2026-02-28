@@ -29,6 +29,9 @@ jobs:
         run: |-
           cd dist-firefox
           zip -r ../timeguessr-social-extension-firefox-${{ github.ref_name }}.zip .
+      - name: Zip source code
+        run: |-
+          git archive --format=zip HEAD -o timeguessr-social-extension-source-${{ github.ref_name }}.zip
       - name: Archive Chrome zip
         uses: actions/upload-artifact@v4
         with:
@@ -39,6 +42,11 @@ jobs:
         with:
           name: timeguessr-social-extension-firefox-${{ github.ref_name }}
           path: timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
+      - name: Archive source zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: timeguessr-social-extension-source-${{ github.ref_name }}
+          path: timeguessr-social-extension-source-${{ github.ref_name }}.zip
 
   release:
     runs-on: ubuntu-latest
@@ -53,6 +61,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: timeguessr-social-extension-firefox-${{ github.ref_name }}
+      - name: Download source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: timeguessr-social-extension-source-${{ github.ref_name }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24.x"
@@ -67,17 +79,19 @@ jobs:
             --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \
             --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \
             --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
-      #      - name: Install Firefox web-ext
-      #        run: |-
-      #          npm install -g web-ext
-      #      - name: Upload to Firefox Add-ons
-      #        run: |-
-      #          web-ext sign \
-      #            --channel=listed \
-      #            --api-key=${{ secrets.FIREFOX_API_KEY }} \
-      #            --api-secret=${{ secrets.FIREFOX_API_SECRET }} \
-      #            --source-dir . \
-      #            --artifacts-dir . \
-      #            --upload-source-code timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
-      #        env:
-      #          WEB_EXT_SOURCE: timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
+      - name: Install Firefox web-ext
+        run: |-
+          npm install -g web-ext
+      - name: Unzip Firefox extension
+        run: |-
+          mkdir -p dist-firefox
+          unzip timeguessr-social-extension-firefox-${{ github.ref_name }}.zip -d dist-firefox
+      - name: Upload to Firefox Add-ons
+        run: |-
+          web-ext sign \
+            --channel=listed \
+            --api-key=${{ secrets.FIREFOX_API_KEY }} \
+            --api-secret=${{ secrets.FIREFOX_API_SECRET }} \
+            --source-dir dist-firefox \
+            --artifacts-dir . \
+            --upload-source-code timeguessr-social-extension-source-${{ github.ref_name }}.zip
