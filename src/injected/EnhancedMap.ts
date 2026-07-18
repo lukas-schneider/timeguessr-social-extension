@@ -1,34 +1,34 @@
-import { isFinalResult, isRoundResult } from "./utils";
-import { EnhancedBreakdownData } from "../types/extension.types";
+import {
+  isTgsFinalData,
+  isTgsRoundData,
+  TgsFinalData,
+  TgsRoundData,
+} from "../types/extension.types";
 import { TgRoundInfo } from "../types/timeguessr.types";
 import { RoundResults } from "../api";
 
 const BLUE = "#0090a7";
 
 export class EnhancedMap {
-  data: EnhancedBreakdownData;
+  data: TgsRoundData | TgsFinalData;
   map: mapkit.Map;
   items: (mapkit.Annotation | mapkit.Overlay)[][];
 
-  constructor(data: EnhancedBreakdownData) {
+  constructor(data: TgsRoundData | TgsFinalData, map: mapkit.Map) {
     this.data = data;
-    this.map = mapkit?.maps?.[0];
-    if (!this.map) {
-      throw new Error("cannot access map");
-    }
+    this.map = map;
     this.map.padding = new mapkit.Padding({
       top: 50,
       left: 50,
       right: 50,
       bottom: 50,
     });
-
-    if (isFinalResult(data)) {
+    if (isTgsFinalData(data)) {
       this.items = [0, 1, 2, 3, 4].map((i) =>
         this.createItems(data.roundInfos[i], data.dailyResults[i]),
       );
       setTimeout(() => this.show(-1), 0);
-    } else if (isRoundResult(data)) {
+    } else if (isTgsRoundData(data)) {
       this.items = [this.createItems(data.roundInfo, data.roundResults)];
       setTimeout(() => this.show(0), 0);
     } else {

@@ -1,9 +1,17 @@
-import { EnhancedBreakdownData } from "../types/extension.types";
 import browser from "webextension-polyfill";
 
-export function injectEnhancedBreakdown(data: EnhancedBreakdownData) {
-  sessionStorage.setItem("tgs.data", JSON.stringify(data));
-  injectScript(browser.runtime.getURL("src/injected/enhancedBreakdown.js"));
+export function injectEnhancedMap() {
+  injectScript(browser.runtime.getURL("src/injected/enhanced-map.injected.js"));
+}
+
+export function injectEnhancedFinalMap() {
+  injectScript(
+    browser.runtime.getURL("src/injected/enhanced-final-map.injected.js"),
+  );
+}
+
+export function injectLeaderboard() {
+  injectScript(browser.runtime.getURL("src/injected/leaderboard.injected.js"));
 }
 
 /**

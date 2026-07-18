@@ -1,5 +1,4 @@
 import {
-  Comment,
   DailyResults,
   DefaultApi,
   GetLeaderboardResponse,
@@ -47,29 +46,35 @@ export interface Settings {
 }
 
 /**
- * Enhanced Breakdown
+ * Content Script -> Injected Script DTOs
  */
 
-export interface FinalResultEnhancedBreakdownData {
+export interface TgsRoundData {
+  groupId: string;
+  uuid: string;
+  dailyNo: string;
+  roundIndex: number;
+  roundResults: RoundResults;
+  roundInfo: TgRoundInfo;
+}
+
+export interface TgsFinalData {
   groupId: string;
   uuid: string;
   dailyNo: string;
   leaderboard: GetLeaderboardResponse;
   dailyResults: DailyResults;
   roundInfos: TgRoundInfo[];
-  roundComments: Comment[][];
 }
 
-export interface RoundResultEnhancedBreakdownData {
-  groupId: string;
-  uuid: string;
-  dailyNo: string;
-  roundIndex: string;
-  roundResults: RoundResults;
-  roundInfo: TgRoundInfo;
-  comments: Comment[];
+export function isTgsFinalData(
+  data: TgsFinalData | TgsRoundData,
+): data is TgsFinalData {
+  return (data as TgsFinalData).leaderboard !== undefined;
 }
 
-export type EnhancedBreakdownData =
-  | FinalResultEnhancedBreakdownData
-  | RoundResultEnhancedBreakdownData;
+export function isTgsRoundData(
+  data: TgsFinalData | TgsRoundData,
+): data is TgsRoundData {
+  return (data as TgsRoundData).roundResults !== undefined;
+}

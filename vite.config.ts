@@ -27,7 +27,11 @@ export default defineConfig({
         "src/manifest.chrome.json",
         "src/manifest.firefox.json",
       ],
-      additionalInputs: ["src/injected/enhancedBreakdown.ts"],
+      additionalInputs: [
+        "src/injected/enhanced-map.injected.ts",
+        "src/injected/enhanced-final-map.injected.ts",
+        "src/injected/leaderboard.injected.ts",
+      ],
     }),
   ],
 });

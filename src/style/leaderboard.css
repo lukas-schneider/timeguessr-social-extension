@@ -1,0 +1,38 @@
+.tgs-leaderboard-container {
+  color: #fff;
+  font-size: 23px;
+  display: flex;
+  width: 100%;
+  padding: 20px;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tgs-daily {
+  text-align: left;
+
+  td {
+    padding-right: 20px;
+  }
+}
+
+.tgs-all-time {
+  text-align: right;
+
+  td {
+    padding-left: 20px;
+  }
+}
+
+.tgs-leaderboard-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tgs-leaderboard-container td {
+  font-family: monospace;
+}
+
+.tgs-its-you {
+  text-decoration: underline;
+}

@@ -1,59 +1,17 @@
-import { TgRoundInfo, TgRoundResultKey } from "../types/timeguessr.types";
+import { TgFinalData, TgProgressData } from "../types/timeguessr.types";
 
-export function getDailyNo(): string {
-  let dailyNo = localStorage.getItem("dailyNumber");
-  if (!dailyNo) {
-    throw new Error("dailyNo is not available");
+export function getTgProgressData(): TgProgressData {
+  const raw = localStorage.getItem("tg_progress_daily");
+  if (!raw) {
+    throw new Error("progress daily not present in local storage");
   }
-  return dailyNo;
+  return JSON.parse(raw) as TgProgressData;
 }
 
-export function getRoundIndex() {
-  if (localStorage.getItem("showResultsFive")) {
-    return 4;
-  } else if (localStorage.getItem("showResultsFour")) {
-    return 3;
-  } else if (localStorage.getItem("showResultsThree")) {
-    return 2;
-  } else if (localStorage.getItem("showResultsTwo")) {
-    return 1;
-  } else if (localStorage.getItem("showResultsOne")) {
-    return 0;
-  } else {
-    throw new Error("missing roundIndex");
+export function getTgFinalData(): TgFinalData {
+  const raw = sessionStorage.getItem("tg_final_score");
+  if (!raw) {
+    throw new Error("progress daily not present in local storage");
   }
-}
-
-export function getRoundInfos(): TgRoundInfo[] {
-  const dailyArrayStr = localStorage.getItem("dailyArray");
-  if (!dailyArrayStr) {
-    throw new Error("dailyArray is not available");
-  }
-  return normalizeDailyArray(JSON.parse(dailyArrayStr));
-}
-
-function normalizeDailyArray(input: any) {
-  if (!Array.isArray(input)) {
-    throw new Error("dailyArray is not an array");
-  }
-
-  const dailyArray: TgRoundInfo[] = input?.filter(
-    (obj) => typeof obj === "object",
-  );
-  if (dailyArray?.length !== 5) {
-    throw new Error("dailyArray length is not 5");
-  }
-
-  const nos = dailyArray.map((round) => parseInt(round.No));
-  const maxNo = Math.max(...nos);
-  return dailyArray.map((round) => {
-    return {
-      ...round,
-      No: String(maxNo),
-    };
-  });
-}
-
-export function getRoundResultValue(key: TgRoundResultKey): string | null {
-  return localStorage.getItem(key);
+  return JSON.parse(raw) as TgFinalData;
 }

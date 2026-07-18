@@ -1,16 +1,13 @@
-import { FinalResultEnhancedBreakdownData } from "../types/extension.types";
+import { TgsFinalData } from "../types/extension.types";
 import type { AllTimeLeaderboardEntry } from "../api";
 
 export class Leaderboard {
-  data: FinalResultEnhancedBreakdownData;
+  data: TgsFinalData;
   div: HTMLDivElement;
 
-  constructor(data: FinalResultEnhancedBreakdownData) {
-    if (!data.leaderboard.today || !data.leaderboard.allTime) {
-      throw new Error("missing leaderboard data");
-    }
+  constructor(tgsFinalData: TgsFinalData, parentElem: HTMLElement) {
+    this.data = tgsFinalData;
 
-    this.data = data;
     this.div = document.createElement("div");
     this.div.className = "tgs-leaderboard-container";
 
@@ -18,9 +15,8 @@ export class Leaderboard {
     // This is necessary for rendering the modal structure.
     this.div.innerHTML = this.getContent();
 
-    const container = document.getElementById("resultsContainer")!;
     // insert div as second child, after the breakdown header
-    container.insertBefore(this.div, container.children[1]);
+    parentElem.insertBefore(this.div, parentElem.children[1]);
   }
 
   getContent() {
