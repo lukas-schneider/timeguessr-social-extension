@@ -94,8 +94,8 @@ For Firefox Add-ons:
 3. Commit changes
 4. Create and push a git tag:
    ```bash
-   git tag vX.X.X
-   git push origin vX.X.X
+   git tag X.X.X
+   git push origin X.X.X
    ```
 5. The GitHub Action will automatically build and upload to both stores
 
