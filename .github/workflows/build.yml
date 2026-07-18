@@ -33,17 +33,17 @@ jobs:
         run: |-
           git archive --format=zip HEAD -o timeguessr-social-extension-source-${{ github.ref_name }}.zip
       - name: Archive Chrome zip
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: timeguessr-social-extension-chrome-${{ github.ref_name }}
           path: timeguessr-social-extension-chrome-${{ github.ref_name }}.zip
       - name: Archive Firefox zip
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: timeguessr-social-extension-firefox-${{ github.ref_name }}
           path: timeguessr-social-extension-firefox-${{ github.ref_name }}.zip
       - name: Archive source zip
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: timeguessr-social-extension-source-${{ github.ref_name }}
           path: timeguessr-social-extension-source-${{ github.ref_name }}.zip
@@ -79,7 +79,8 @@ jobs:
         run: |-
           chrome-webstore-upload upload \
             --source timeguessr-social-extension-chrome-${{ github.ref_name }}.zip \
-            --extension-id ${{ vars.EXTENSION_ID }}
+            --extension-id ${{ vars.EXTENSION_ID }} \
+            --publisher-id ${{ vars.CI_GOOGLE_PUBLISHER_ID }}
       - name: Install Firefox web-ext
         run: |-
           npm install -g web-ext
