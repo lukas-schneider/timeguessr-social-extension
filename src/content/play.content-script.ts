@@ -114,7 +114,6 @@ function checkResultsMap() {
     injectEnhancedMap();
   } else if (!resultsMap && isResultsMapVisible) {
     isResultsMapVisible = false;
-    console.log("hide");
   }
 }
 

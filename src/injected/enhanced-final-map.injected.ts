@@ -16,7 +16,7 @@ function init(_: TgFinalData, tgsData: TgsFinalData, map: mapkit.Map) {
   const enhancedMap = new EnhancedMap(tgsData, map);
 
   globalClickListener = (e: Event) => {
-    if (e.target instanceof HTMLElement) {
+    if (e.target instanceof Element) {
       const roundCard = e.target.closest("div.round-card");
       const imageBtn = e.target.closest("button.image-btn");
       if (roundCard && !imageBtn) {
@@ -84,7 +84,6 @@ function wait() {
     return;
   }
 
-  console.log("ready", map.annotations);
   init(tgData, tgsFinalData, map);
 }
 
