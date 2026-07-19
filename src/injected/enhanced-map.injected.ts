@@ -66,7 +66,8 @@ function wait() {
     return;
   }
 
-  init(tgData, tgsRoundData, map);
+  // wait an additional half second, since the original site sometimes takes a moment to init the markers properly
+  setTimeout(() => init(tgData, tgsRoundData, map), 500);
 }
 
 wait();
