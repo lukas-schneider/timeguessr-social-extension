@@ -32,6 +32,8 @@ export default defineConfig({
       "chrome": "/usr/bin/brave-browser",
       "firefox": "/usr/bin/firefox",
     },
+    firefoxProfile: `${process.env.HOME}/.mozilla/firefox/wxt-dev`,
+    keepProfileChanges: true,
     startUrls: ["https://timeguessr.com"],
     openDevtools: true,
   },
