@@ -28,7 +28,11 @@ export default defineConfig({
     }),
   }),
   webExt: {
-    chromiumBinary: "/usr/bin/brave-browser",
+    binaries: {
+      "chrome": "/usr/bin/brave-browser",
+      "firefox": "/usr/bin/firefox",
+    },
     startUrls: ["https://timeguessr.com"],
+    openDevtools: true,
   },
 });
