@@ -16,5 +16,5 @@
     "skipLibCheck": true,
     "typeRoots": ["node_modules/mapkit-typescript", "node_modules/@types"]
   },
-  "include": ["src"]
+  "include": ["src", "entrypoints", ".wxt/wxt.d.ts"]
 }

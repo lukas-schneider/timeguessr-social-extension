@@ -8,10 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+.output
 dist-chrome
 dist-firefox
-dist-ssr
 *.local
 
 # Editor directories and files

@@ -1,5 +1,5 @@
-import { UpdatePlayerResponse } from "./api";
-import { callApi, getSettings, updateSettings } from "./utils/extension.utils";
+import { UpdatePlayerResponse } from "../../src/api";
+import { callApi, getSettings, updateSettings } from "../../src/utils/extension.utils";
 
 async function initSettings() {
   const $save = document.getElementById("save") as HTMLButtonElement;

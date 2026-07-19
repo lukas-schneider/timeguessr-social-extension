@@ -1,17 +1,15 @@
 import browser from "webextension-polyfill";
 
 export function injectEnhancedMap() {
-  injectScript(browser.runtime.getURL("src/injected/enhanced-map.injected.js"));
+  injectScript(browser.runtime.getURL("enhanced-map.js"));
 }
 
 export function injectEnhancedFinalMap() {
-  injectScript(
-    browser.runtime.getURL("src/injected/enhanced-final-map.injected.js"),
-  );
+  injectScript(browser.runtime.getURL("enhanced-final-map.js"));
 }
 
 export function injectLeaderboard() {
-  injectScript(browser.runtime.getURL("src/injected/leaderboard.injected.js"));
+  injectScript(browser.runtime.getURL("leaderboard.js"));
 }
 
 /**

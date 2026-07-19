@@ -23,12 +23,12 @@ jobs:
           npm run build
       - name: Zip Chrome extension
         run: |-
-          cd dist-chrome
-          zip -r ../timeguessr-social-extension-chrome-${{ github.ref_name }}.zip .
+          cd .output/chrome-mv3
+          zip -r ../../timeguessr-social-extension-chrome-${{ github.ref_name }}.zip .
       - name: Zip Firefox extension
         run: |-
-          cd dist-firefox
-          zip -r ../timeguessr-social-extension-firefox-${{ github.ref_name }}.zip .
+          cd .output/firefox-mv3
+          zip -r ../../timeguessr-social-extension-firefox-${{ github.ref_name }}.zip .
       - name: Zip source code
         run: |-
           git archive --format=zip HEAD -o timeguessr-social-extension-source-${{ github.ref_name }}.zip
