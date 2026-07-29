@@ -32,15 +32,16 @@ export async function loadFinal() {
 
   globalClickListener = (e: Event) => {
     if (e.target instanceof HTMLElement) {
-      if (e.target.matches("button.bottom-link")) {
-        if (e.target.innerText?.trim() === "Breakdown") {
-          injectEnhancedFinalMap();
+      if (
+        e.target.matches("button.action-btn") &&
+        e.target.innerText?.includes("Breakdown")
+      ) {
+        injectEnhancedFinalMap();
 
-          // remove after one invocation
-          document.body.removeEventListener("click", globalClickListener, {
-            capture: true,
-          });
-        }
+        // remove after one invocation
+        document.body.removeEventListener("click", globalClickListener, {
+          capture: true,
+        });
       }
       if (e.target.matches("div.round-card")) {
         // prevent default map zoom / focusing

@@ -29,8 +29,8 @@ export default defineConfig({
   }),
   webExt: {
     binaries: {
-      "chrome": "/usr/bin/brave-browser",
-      "firefox": "/usr/bin/firefox",
+      chrome: "/usr/bin/brave-browser",
+      firefox: "/usr/bin/firefox",
     },
     firefoxProfile: `${process.env.HOME}/snap/firefox/common/.mozilla/firefox/wxt-dev`,
     chromiumProfile: `${process.env.HOME}/.config/BraveSoftware/Brave-Browser/wxt-dev`,
